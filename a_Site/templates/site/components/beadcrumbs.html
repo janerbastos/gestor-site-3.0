@@ -1,0 +1,26 @@
+{% load static %}
+<!-- Breadcrumb Component -->
+<nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'site:dashboard' %}" class="hover:text-indigo-600 transition-colors">
+                <i class="fas fa-home mr-2 text-xs"></i>
+                Dashboard
+            </a>
+        </li>
+        {% if breadcrumbs %}
+            {% for item in breadcrumbs %}
+            <li>
+                <div class="flex items-center">
+                    <i class="fas fa-chevron-right text-[10px] mx-1"></i>
+                    {% if item.url %}
+                        <a href="{{ item.url }}" class="ml-1 md:ml-2 hover:text-indigo-600 transition-colors">{{ item.label }}</a>
+                    {% else %}
+                        <span class="ml-1 md:ml-2 font-medium text-gray-800">{{ item.label }}</span>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        {% endif %}
+    </ol>
+</nav>

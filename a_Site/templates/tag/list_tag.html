@@ -1,0 +1,119 @@
+{% extends 'site/open_site.html' %}
+{% load static %}
+
+{% block site_content %}
+<div class="space-y-8">
+    <!-- Section Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Tags e Categorias</h2>
+            <p class="text-sm text-slate-500">Gerencie os termos de organização e indexação do seu portal.</p>
+        </div>
+        <a href="{% url 'site:create-tag' site.url %}" class="inline-flex items-center px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 uppercase tracking-widest">
+            <i class="fas fa-plus mr-2"></i>
+            Nova Tag
+        </a>
+    </div>
+
+    <!-- Tags Table Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+        {% if tags %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50/50 border-b border-slate-100">
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome da Tag</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Slug</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Uso</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for tag in tags %}
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <span class="text-sm font-bold text-slate-700">{{ tag.titulo }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <code class="px-2 py-1 bg-slate-100 rounded-md text-[10px] font-mono text-slate-500">{{ tag.tag }}</code>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="text-xs font-black text-slate-400">{{ tag.count|default:0 }} items</span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <a href="{% url 'site:edit-tag' site.url tag.tag %}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-xl shadow-sm transition-all" title="Editar">
+                                    <i class="fas fa-edit text-xs"></i>
+                                </a>
+                                <a href="{% url 'site:delete-tag' site.url tag.tag %}" class="p-2 text-slate-400 hover:text-red-600 hover:bg-white rounded-xl shadow-sm transition-all" title="Excluir">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if tags.has_other_pages %}
+        <div class="px-8 py-6 bg-slate-50/30 border-t border-slate-50 flex items-center justify-center">
+            <nav class="flex items-center gap-1">
+                {% if tags.has_previous %}
+                <a href="?page={{ tags.previous_page_number }}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-xl transition-all">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                {% for i in tags.paginator.page_range %}
+                    {% if tags.number == i %}
+                    <span class="h-9 w-9 flex items-center justify-center bg-indigo-600 text-white text-xs font-black rounded-xl shadow-lg shadow-indigo-500/20">{{ i }}</span>
+                    {% elif i > tags.number|add:'-3' and i < tags.number|add:'3' %}
+                    <a href="?page={{ i }}" class="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-white rounded-xl font-bold text-xs transition-all">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if tags.has_next %}
+                <a href="?page={{ tags.next_page_number }}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-xl transition-all">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="p-20 flex flex-col items-center justify-center text-center">
+            <div class="h-20 w-20 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-200 text-4xl mb-6">
+                <i class="fas fa-tags"></i>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Nenhuma tag cadastrada</h3>
+            <p class="text-sm text-slate-500 max-w-xs mt-2">Tags ajudam a organizar seu conteúdo e facilitam a busca pelos usuários.</p>
+            <div class="mt-8">
+                <a href="{% url 'site:create-tag' site.url %}" class="inline-flex items-center px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 uppercase tracking-widest">
+                    Criar Primeira Tag
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Help Card -->
+    <div class="p-6 bg-amber-50 rounded-3xl border border-amber-100 flex items-start gap-4">
+        <div class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm shrink-0">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-amber-900 uppercase tracking-tight">Sobre a Taxonomia</h4>
+            <p class="text-xs text-amber-700 leading-relaxed mt-1">Utilize tags curtas e objetivas. Termos bem definidos melhoram o SEO (otimização para motores de busca) e a navegação interna do portal.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

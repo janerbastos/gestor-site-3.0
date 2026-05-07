@@ -1,0 +1,103 @@
+{% extends 'comum/Base.html' %}
+{% load static %}
+
+{% block titulo %}Novo Site{% endblock %}
+
+{% block main %}
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Header Section -->
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Criar Novo Site</h1>
+        <p class="mt-2 text-gray-600">Preencha as informações básicas para registrar um novo portal no gerenciador.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <form method="POST" class="p-8 space-y-8">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm text-red-700 font-medium">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- URL Section -->
+                <div class="space-y-2 md:col-span-2">
+                    <label for="{{ form.url.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        URL do Site
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-400 text-sm">https://</span>
+                        </div>
+                        <input type="text" name="{{ form.url.name }}" id="{{ form.url.id_for_label }}" 
+                               value="{{ form.url.value|default:'' }}"
+                               class="{% if form.url.errors %}border-red-500 focus:ring-red-500{% else %}border-gray-300 focus:ring-indigo-500{% endif %} block w-full pl-16 pr-4 py-3 rounded-lg border focus:ring-2 transition-all text-sm"
+                               placeholder="exemplo.com.br">
+                    </div>
+                    {% if form.url.errors %}
+                        <p class="mt-1 text-xs text-red-600 font-medium">{{ form.url.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Title Section -->
+                <div class="space-y-2 md:col-span-2">
+                    <label for="{{ form.titulo.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Título do Site
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                        <p class="mt-1 text-xs text-red-600 font-medium">{{ form.titulo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Status Section -->
+                <div class="space-y-2">
+                    <label for="{{ form.status.id_for_label }}" class="block text-sm font-semibold text-gray-700">Status</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                        <p class="mt-1 text-xs text-red-600 font-medium">{{ form.status.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Workflow Section -->
+                <div class="space-y-2">
+                    <label for="{{ form.workflow.id_for_label }}" class="block text-sm font-semibold text-gray-700">Fluxo de Trabalho (Workflow)</label>
+                    {{ form.workflow }}
+                    {% if form.workflow.errors %}
+                        <p class="mt-1 text-xs text-red-600 font-medium">{{ form.workflow.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Description Section -->
+                <div class="space-y-2 md:col-span-2">
+                    <label for="{{ form.descricao.id_for_label }}" class="block text-sm font-semibold text-gray-700">Descrição</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <p class="mt-1 text-xs text-red-600 font-medium">{{ form.descricao.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-400 mt-1 italic">Dica: Uma boa descrição ajuda na organização interna dos seus projetos.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-100">
+                <a href="{% url 'site:dashboard' %}" class="px-6 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow transition-all flex items-center">
+                    <i class="fas fa-save mr-2 text-xs"></i>
+                    Salvar Site
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

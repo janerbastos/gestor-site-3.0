@@ -1,0 +1,98 @@
+[
+  {
+    "model": "a_Site.contenttype",
+    "pk": 1,
+    "fields": {
+      "tipo": "ATNoticia",
+      "descricao": "Noticia"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 2,
+    "fields": {
+      "tipo": "ATPagina",
+      "descricao": "Pagina"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 3,
+    "fields": {
+      "tipo": "ATPasta",
+      "descricao": "Pasta"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 4,
+    "fields": {
+      "tipo": "ATArquivo",
+      "descricao": "Arquivo"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 5,
+    "fields": {
+      "tipo": "ATEvento",
+      "descricao": "Evento"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 6,
+    "fields": {
+      "tipo": "ATAgenda",
+      "descricao": "Agenda"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 7,
+    "fields": {
+      "tipo": "ATImagem",
+      "descricao": "Imagem"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 8,
+    "fields": {
+      "tipo": "ATBanner",
+      "descricao": "Banner"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 9,
+    "fields": {
+      "tipo": "ATInforme",
+      "descricao": "Informe"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 10,
+    "fields": {
+      "tipo": "ATLink",
+      "descricao": "Link"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 11,
+    "fields": {
+      "tipo": "ATServico",
+      "descricao": "Servico"
+    }
+  },
+  {
+    "model": "a_Site.contenttype",
+    "pk": 12,
+    "fields": {
+      "tipo": "ATView",
+      "descricao": "Visão"
+    }
+  }
+]

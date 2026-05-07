@@ -1,0 +1,1 @@
+Pasta destinada para armazenar arquivos de certificado em produção

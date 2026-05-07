@@ -1,0 +1,114 @@
+{% extends 'site/open_site.html' %}
+{% load static %}
+
+{% block site_content %}
+<div class="space-y-8">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Códigos e Scripts</h2>
+            <p class="text-sm text-slate-500">Insira códigos de acompanhamento, analytics e outros scripts de terceiros.</p>
+        </div>
+    </div>
+
+    <!-- Codes Form Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+        <form method="POST" class="p-8 space-y-10">
+            {% csrf_token %}
+
+            <div class="space-y-10">
+                <!-- Analytics Section -->
+                <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">Analytics & Acompanhamento</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="space-y-2">
+                            <label for="{{ form.analytic_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Google Analytics (GTAG)</label>
+                            {{ form.analytic_cod }}
+                            {% if form.analytic_cod.errors %}
+                                <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.analytic_cod.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media Section -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 bg-white border border-slate-100 rounded-lg flex items-center justify-center text-indigo-600 shadow-sm">
+                            <i class="fas fa-share-nodes"></i>
+                        </div>
+                        <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">Scripts de Redes Sociais</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label for="{{ form.facebook_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Facebook SDK / Pixel</label>
+                            {{ form.facebook_cod }}
+                        </div>
+                        <div class="space-y-2">
+                            <label for="{{ form.twitter_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Twitter / X Script</label>
+                            {{ form.twitter_cod }}
+                        </div>
+                        <div class="space-y-2">
+                            <label for="{{ form.youtube_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">YouTube Embed Code</label>
+                            {{ form.youtube_cod }}
+                        </div>
+                        <div class="space-y-2">
+                            <label for="{{ form.google_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Outros Códigos Google</label>
+                            {{ form.google_cod }}
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label for="{{ form.flicker_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Flickr Widget Code</label>
+                            {{ form.flicker_cod }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom HTML Section -->
+                <div class="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">HTML Customizado Avançado</h3>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="{{ form.html_cod.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Código HTML/JS Adicional</label>
+                        {{ form.html_cod }}
+                        <p class="mt-2 text-[10px] text-indigo-400 italic">Cuidado: Estes códigos são inseridos diretamente no portal e podem afetar o layout ou funcionamento.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-50">
+                <a href="{% url 'site:open-site' site.url %}" class="px-6 py-2.5 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                    <i class="fas fa-code text-sm"></i>
+                    Salvar Códigos
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alert Card -->
+    <div class="p-6 bg-red-50 rounded-3xl border border-red-100 flex items-start gap-4">
+        <div class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-red-600 shadow-sm shrink-0">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-red-900 uppercase tracking-tight">Segurança de Scripts</h4>
+            <p class="text-xs text-red-700 leading-relaxed mt-1">Apenas insira códigos de fontes confiáveis. Scripts maliciosos podem capturar dados sensíveis dos seus usuários ou danificar a estrutura do portal. Revise sempre o código antes de salvar.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

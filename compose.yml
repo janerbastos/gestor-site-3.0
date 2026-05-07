@@ -1,0 +1,15 @@
+services:
+
+  application:
+    build: .
+    image:  registry.ufopa.edu.br/library/django5_python3-11:2.0.2
+    container_name: django_mamba
+    volumes:
+      - .:/apps/mamba
+    
+    hostname: django_mamba.ufopa.edu.br
+    ports:
+      - 8001:8000
+    command: python mamba/manage.py runserver 0.0.0.0:8000
+    
+

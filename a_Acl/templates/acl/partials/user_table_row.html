@@ -1,0 +1,39 @@
+<tr id="member-row-{{ member.id }}" class="group hover:bg-slate-50/80 dark:hover:bg-gray-800/50 transition-all animate-fade-in-up">
+    <td class="px-8 py-6">
+        <div class="flex items-center gap-4">
+            <div class="h-10 w-10 bg-gradient-to-tr from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-sm group-hover:scale-110 transition-transform">
+                {{ member.user.first_name|slice:":1" }}{{ member.user.last_name|slice:":1" }}
+            </div>
+            <div>
+                <p class="text-sm font-black text-slate-800 dark:text-white">{{ member.user.get_full_name }}</p>
+                <p class="text-[11px] text-slate-400 font-medium">{{ member.user.email }}</p>
+            </div>
+        </div>
+    </td>
+    <td class="px-8 py-6">
+        <div class="flex flex-wrap justify-center gap-1.5">
+            {% for role in member.roles.all %}
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-wider border border-indigo-100 dark:border-indigo-500/20">
+                    {{ role.nome }}
+                </span>
+            {% empty %}
+                <span class="text-[10px] text-slate-300 italic">Nenhum papel</span>
+            {% endfor %}
+        </div>
+    </td>
+    <td class="px-8 py-6 text-right">
+        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+            <!-- Edit Roles Button -->
+            <button @click="modalOpen = true" 
+                    hx-get="{% url 'acl:manage-user-roles' site.url member.id %}" 
+                    hx-target="#modal-body-content"
+                    class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all" 
+                    title="Editar Papéis">
+                <i class="fas fa-user-shield text-sm"></i>
+            </button>
+            <a href="{% url 'acl:remove-user-site' site.url member.id %}" class="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all" title="Remover do Site">
+                <i class="fas fa-user-minus text-sm"></i>
+            </a>
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,120 @@
+{% extends 'comum/Base.html' %}
+
+{% load static %}
+
+{% block main %}
+<div class="min-h-screen py-12 px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-6">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Perfis de Acesso</h2>
+                <p class="mt-2 text-sm text-slate-500 dark:text-gray-400 font-medium">Gerencie os grupos e níveis de permissão do sistema</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <!-- Search Form -->
+                <form method="GET" class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-slate-300 group-focus-within:text-blue-500 transition-colors"></i>
+                    </div>
+                    <input type="text" name="q" value="{{ request.GET.q|default:'' }}" 
+                           placeholder="Buscar perfil..." 
+                           class="block w-full sm:w-64 rounded-2xl border-0 py-3 pl-11 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-700 dark:placeholder-gray-500 transition-all">
+                </form>
+
+                <a href="{% url 'acl:create-role' %}" class="group flex items-center justify-center px-6 py-3 text-sm font-black text-white bg-blue-600 rounded-2xl hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98]">
+                    <i class="fas fa-plus mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
+                    NOVO PERFIL
+                </a>
+            </div>
+        </div>
+
+        <!-- Messages Section -->
+        {% include 'account/partials/message.html' %}
+
+        <div x-data="{ 
+            async openModal(id) {
+                const resp = await fetch(`/role/${id}/permissions/`);
+                const html = await resp.text();
+                document.getElementById('modal-container').innerHTML = html;
+            }
+        }">
+            <!-- List Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-[2rem] shadow-2xl shadow-slate-200/60 dark:shadow-none border border-slate-100 dark:border-gray-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-50 dark:border-gray-700/50">
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em]">Perfil</th>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em]">Identificador (Slug)</th>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] text-center">Nível</th>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50 dark:divide-gray-700/50">
+                            {% for role in roles %}
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-gray-700/30 transition-colors group">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 flex-shrink-0 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 font-black text-lg">
+                                            <i class="fas fa-user-shield text-sm"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-bold text-slate-900 dark:text-white">{{ role.nome }}</div>
+                                            <div class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">ID: #{{ role.id }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <code class="text-xs font-mono px-2 py-1 bg-slate-100 dark:bg-gray-900 text-slate-600 dark:text-gray-400 rounded-lg border border-slate-200 dark:border-gray-700">
+                                        {{ role.slug }}
+                                    </code>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 uppercase tracking-widest border border-blue-100 dark:border-blue-800/30">
+                                        Lvl {{ role.level }}
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center justify-center space-x-3">
+                                        <button @click="openModal({{ role.id }})" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all" title="Gerenciar Permissões">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <a href="{% url 'acl:edit-role' role.id %}" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all" title="Editar Perfil">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'acl:delete-role' role.id %}" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all" title="Excluir Perfil">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-8 py-20 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="p-6 bg-slate-50 dark:bg-gray-900/50 rounded-full mb-4">
+                                            <i class="fas fa-shield-alt text-4xl text-slate-300"></i>
+                                        </div>
+                                        <h4 class="text-lg font-bold text-slate-900 dark:text-white">Nenhum perfil encontrado</h4>
+                                        <p class="text-sm text-slate-500 dark:text-gray-400 max-w-xs mx-auto mt-2">Não existem perfis cadastrados que correspondam à sua busca.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination Component -->
+                {% with users=roles %}
+                    {% include 'account/components/paginator.html' %}
+                {% endwith %}
+            </div>
+
+            <!-- Modal Container -->
+            <div id="modal-container"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

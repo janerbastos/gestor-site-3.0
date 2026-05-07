@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-brand-50: #eff6ff;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-slate-50 text-slate-900 dark:bg-gray-950 dark:text-slate-100 transition-colors duration-300;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-700 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-600; }
+
+@utility form-control {
+    @apply block w-full bg-slate-50 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 
+           focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200
+           dark:bg-gray-800 dark:border-gray-700 dark:text-slate-200 dark:focus:border-indigo-500/50;
+}
+
+@layer components {
+    .form-group {
+        @apply space-y-2;
+    }
+
+    .form-label {
+        @apply block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider;
+    }
+
+    .input-field {
+        @apply form-control py-3 pl-11 pr-4;
+    }
+
+    .select-field {
+        @apply form-control py-3 pl-11 pr-10 appearance-none cursor-pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 1rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+    }
+
+    .select-field[multiple] {
+        @apply h-32 pr-4 bg-none;
+    }
+
+    .textarea-field {
+        @apply form-control p-4 min-h-[120px] resize-none;
+    }
+
+    .checkbox-field {
+        @apply h-5 w-5 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 
+               dark:bg-gray-800 dark:border-gray-700 transition-all cursor-pointer;
+    }
+
+    .btn-primary {
+        @apply flex items-center justify-center px-8 py-3 bg-indigo-600 hover:bg-indigo-700 
+               text-white text-sm font-black rounded-2xl shadow-lg shadow-indigo-500/20 
+               transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+    }
+
+    .btn-danger {
+        @apply flex items-center justify-center px-8 py-3 text-sm font-black text-white 
+               bg-red-600 rounded-2xl hover:bg-red-700 focus:ring-4 focus:outline-none 
+               focus:ring-red-300 shadow-xl shadow-red-500/20 transition-all active:scale-[0.98];
+    }
+
+    .btn-secondary {
+        @apply flex items-center justify-center px-8 py-3 text-sm font-black text-slate-600 
+               bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98] 
+               dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
+    }
+
+    .card-base {
+        @apply bg-white dark:bg-gray-900 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 shadow-sm overflow-hidden;
+    }
+
+    .select-field-large {
+        @apply h-48 pr-4 bg-none;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.group:hover .group-hover\:shake {
+    animation: shake 0.2s ease-in-out infinite;
+}

@@ -1,0 +1,109 @@
+{% extends 'site/open_site.html' %}
+{% load static %}
+
+{% block site_content %}
+<div class="space-y-8">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Mídia e Arquivos</h2>
+            <p class="text-sm text-slate-500">Gerencie a identidade visual do seu portal.</p>
+        </div>
+    </div>
+
+    <!-- Media Form Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+        <form method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                
+                <!-- Favicon & Logo Column -->
+                <div class="space-y-8">
+                    <!-- Favicon -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Favicon (Ícone do Navegador)</label>
+                        <div class="flex items-center gap-6 p-4 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                            <div class="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-sm shrink-0 overflow-hidden">
+                                {% if site.favicon %}
+                                    <img src="{{ site.favicon.url }}" class="h-10 w-10 object-contain">
+                                {% else %}
+                                    <i class="fas fa-image text-slate-200 text-2xl"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow">
+                                <input type="file" name="favicon" id="id_favicon" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
+                                <p class="mt-2 text-[10px] text-slate-400 italic">Formato recomendado: .png ou .ico (32x32px)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Logotipo Principal</label>
+                        <div class="flex flex-col gap-4 p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                            <div class="h-24 w-full bg-white rounded-2xl flex items-center justify-center shadow-sm overflow-hidden p-4">
+                                {% if site.logo %}
+                                    <img src="{{ site.logo.url }}" class="max-h-full max-w-full object-contain">
+                                {% else %}
+                                    <i class="fas fa-images text-slate-200 text-4xl"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow">
+                                <input type="file" name="logo" id="id_logo" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
+                                <p class="mt-2 text-[10px] text-slate-400 italic">Dê preferência para fundos transparentes (.png ou .svg)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banner Column -->
+                <div class="space-y-8">
+                    <!-- Banner Topo -->
+                    <div class="space-y-3 h-full flex flex-col">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Banner do Topo</label>
+                        <div class="flex flex-col gap-4 p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200 flex-grow">
+                            <div class="w-full aspect-video bg-white rounded-2xl flex items-center justify-center shadow-sm overflow-hidden p-2">
+                                {% if site.banner_topo %}
+                                    <img src="{{ site.banner_topo.url }}" class="h-full w-full object-cover rounded-xl">
+                                {% else %}
+                                    <div class="text-center">
+                                        <i class="fas fa-panorama text-slate-200 text-5xl mb-2"></i>
+                                        <p class="text-[10px] text-slate-300 font-bold uppercase">Sem Banner Definido</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mt-auto">
+                                <input type="file" name="banner_topo" id="id_banner_topo" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
+                                <p class="mt-2 text-[10px] text-slate-400 italic">Tamanho sugerido: 1920x400px</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-50">
+                <a href="{% url 'site:open-site' site.url %}" class="px-6 py-2.5 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                    <i class="fas fa-cloud-upload-alt text-sm"></i>
+                    Atualizar Mídias
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Instructions Card -->
+    <div class="p-6 bg-blue-50 rounded-3xl border border-blue-100 flex items-start gap-4">
+        <div class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-blue-600 shadow-sm shrink-0">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-blue-900 uppercase tracking-tight">Otimização de Imagens</h4>
+            <p class="text-xs text-blue-700 leading-relaxed mt-1">Para garantir a melhor performance do seu site, utilize imagens otimizadas (WebP ou compressão JPEG/PNG). Arquivos muito grandes podem afetar o tempo de carregamento para seus usuários.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+[
+  {"model":"a_Acl.permission","pk":1,"fields":{"nome":"create","slug":"Cria","content_type":1}},
+  {"model":"a_Acl.permission","pk":2,"fields":{"nome":"delete","slug":"Apagar","content_type":1}},
+  {"model":"a_Acl.permission","pk":3,"fields":{"nome":"update","slug":"Atualizar","content_type":1}},
+  {"model":"a_Acl.permission","pk":4,"fields":{"nome":"workflow","slug":"Publicar","content_type":1}},
+  {"model":"a_Acl.permission","pk":5,"fields":{"nome":"retirar","slug":"Retirar","content_type":1}},
+
+  {"model":"a_Acl.permission","pk":6,"fields":{"nome":"create","slug":"Cria","content_type":2}},
+  {"model":"a_Acl.permission","pk":7,"fields":{"nome":"delete","slug":"Apagar","content_type":2}},
+  {"model":"a_Acl.permission","pk":8,"fields":{"nome":"update","slug":"Atualizar","content_type":2}},
+  {"model":"a_Acl.permission","pk":9,"fields":{"nome":"workflow","slug":"Publicar","content_type":2}},
+  {"model":"a_Acl.permission","pk":10,"fields":{"nome":"retirar","slug":"Retirar","content_type":2}},
+
+  {"model":"a_Acl.permission","pk":11,"fields":{"nome":"create","slug":"Cria","content_type":3}},
+  {"model":"a_Acl.permission","pk":12,"fields":{"nome":"delete","slug":"Apagar","content_type":3}},
+  {"model":"a_Acl.permission","pk":13,"fields":{"nome":"update","slug":"Atualizar","content_type":3}},
+  {"model":"a_Acl.permission","pk":14,"fields":{"nome":"workflow","slug":"Publicar","content_type":3}},
+  {"model":"a_Acl.permission","pk":15,"fields":{"nome":"retirar","slug":"Retirar","content_type":3}},
+
+  {"model":"a_Acl.permission","pk":16,"fields":{"nome":"create","slug":"Cria","content_type":4}},
+  {"model":"a_Acl.permission","pk":17,"fields":{"nome":"delete","slug":"Apagar","content_type":4}},
+  {"model":"a_Acl.permission","pk":18,"fields":{"nome":"update","slug":"Atualizar","content_type":4}},
+  {"model":"a_Acl.permission","pk":19,"fields":{"nome":"workflow","slug":"Publicar","content_type":4}},
+  {"model":"a_Acl.permission","pk":20,"fields":{"nome":"retirar","slug":"Retirar","content_type":4}},
+
+  {"model":"a_Acl.permission","pk":21,"fields":{"nome":"create","slug":"Cria","content_type":5}},
+  {"model":"a_Acl.permission","pk":22,"fields":{"nome":"delete","slug":"Apagar","content_type":5}},
+  {"model":"a_Acl.permission","pk":23,"fields":{"nome":"update","slug":"Atualizar","content_type":5}},
+  {"model":"a_Acl.permission","pk":24,"fields":{"nome":"workflow","slug":"Publicar","content_type":5}},
+  {"model":"a_Acl.permission","pk":25,"fields":{"nome":"retirar","slug":"Retirar","content_type":5}},
+
+  {"model":"a_Acl.permission","pk":26,"fields":{"nome":"create","slug":"Cria","content_type":6}},
+  {"model":"a_Acl.permission","pk":27,"fields":{"nome":"delete","slug":"Apagar","content_type":6}},
+  {"model":"a_Acl.permission","pk":28,"fields":{"nome":"update","slug":"Atualizar","content_type":6}},
+  {"model":"a_Acl.permission","pk":29,"fields":{"nome":"workflow","slug":"Publicar","content_type":6}},
+  {"model":"a_Acl.permission","pk":30,"fields":{"nome":"retirar","slug":"Retirar","content_type":6}},
+
+  {"model":"a_Acl.permission","pk":31,"fields":{"nome":"create","slug":"Cria","content_type":7}},
+  {"model":"a_Acl.permission","pk":32,"fields":{"nome":"delete","slug":"Apagar","content_type":7}},
+  {"model":"a_Acl.permission","pk":33,"fields":{"nome":"update","slug":"Atualizar","content_type":7}},
+  {"model":"a_Acl.permission","pk":34,"fields":{"nome":"workflow","slug":"Publicar","content_type":7}},
+  {"model":"a_Acl.permission","pk":35,"fields":{"nome":"retirar","slug":"Retirar","content_type":7}},
+
+  {"model":"a_Acl.permission","pk":36,"fields":{"nome":"create","slug":"Cria","content_type":8}},
+  {"model":"a_Acl.permission","pk":37,"fields":{"nome":"delete","slug":"Apagar","content_type":8}},
+  {"model":"a_Acl.permission","pk":38,"fields":{"nome":"update","slug":"Atualizar","content_type":8}},
+  {"model":"a_Acl.permission","pk":39,"fields":{"nome":"workflow","slug":"Publicar","content_type":8}},
+  {"model":"a_Acl.permission","pk":40,"fields":{"nome":"retirar","slug":"Retirar","content_type":8}},
+
+  {"model":"a_Acl.permission","pk":41,"fields":{"nome":"create","slug":"Cria","content_type":9}},
+  {"model":"a_Acl.permission","pk":42,"fields":{"nome":"delete","slug":"Apagar","content_type":9}},
+  {"model":"a_Acl.permission","pk":43,"fields":{"nome":"update","slug":"Atualizar","content_type":9}},
+  {"model":"a_Acl.permission","pk":44,"fields":{"nome":"workflow","slug":"Publicar","content_type":9}},
+  {"model":"a_Acl.permission","pk":45,"fields":{"nome":"retirar","slug":"Retirar","content_type":9}},
+
+  {"model":"a_Acl.permission","pk":46,"fields":{"nome":"create","slug":"Cria","content_type":10}},
+  {"model":"a_Acl.permission","pk":47,"fields":{"nome":"delete","slug":"Apagar","content_type":10}},
+  {"model":"a_Acl.permission","pk":48,"fields":{"nome":"update","slug":"Atualizar","content_type":10}},
+  {"model":"a_Acl.permission","pk":49,"fields":{"nome":"workflow","slug":"Publicar","content_type":10}},
+  {"model":"a_Acl.permission","pk":50,"fields":{"nome":"retirar","slug":"Retirar","content_type":10}},
+
+  {"model":"a_Acl.permission","pk":51,"fields":{"nome":"create","slug":"Cria","content_type":11}},
+  {"model":"a_Acl.permission","pk":52,"fields":{"nome":"delete","slug":"Apagar","content_type":11}},
+  {"model":"a_Acl.permission","pk":53,"fields":{"nome":"update","slug":"Atualizar","content_type":11}},
+  {"model":"a_Acl.permission","pk":54,"fields":{"nome":"workflow","slug":"Publicar","content_type":11}},
+  {"model":"a_Acl.permission","pk":55,"fields":{"nome":"retirar","slug":"Retirar","content_type":11}},
+
+  {"model":"a_Acl.permission","pk":56,"fields":{"nome":"create","slug":"Cria","content_type":12}},
+  {"model":"a_Acl.permission","pk":57,"fields":{"nome":"delete","slug":"Apagar","content_type":12}},
+  {"model":"a_Acl.permission","pk":58,"fields":{"nome":"update","slug":"Atualizar","content_type":12}},
+  {"model":"a_Acl.permission","pk":59,"fields":{"nome":"workflow","slug":"Publicar","content_type":12}},
+  {"model":"a_Acl.permission","pk":60,"fields":{"nome":"retirar","slug":"Retirar","content_type":12}}
+]

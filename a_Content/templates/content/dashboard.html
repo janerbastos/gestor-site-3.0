@@ -1,0 +1,218 @@
+{% extends 'comum/Base.html' %}
+{% load static %}
+
+{% block titulo %}Gestor de Conteúdo: {{ site.titulo }}{% endblock %}
+
+{% block main %}
+<div class="p-6 animate-fade-in-up">
+    <!-- Header Section -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fas fa-folder-tree text-lg"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Gestor de Conteúdo</h1>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Gerenciamento hierárquico de páginas, notícias e arquivos do portal <strong>{{ site.titulo }}</strong>.</p>
+        </div>
+
+        <div class="flex items-center gap-3" x-data="{ dropdownOpen: false }">
+            <a href="{% url 'site:open-site' site.url %}" class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+                <i class="fas fa-arrow-left text-indigo-500"></i>
+                Voltar ao Painel
+            </a>
+            
+            <div class="relative">
+                <button @click="dropdownOpen = !dropdownOpen" 
+                        @click.away="dropdownOpen = false"
+                        class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                    <i class="fas fa-plus text-sm"></i>
+                    Novo Conteúdo
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div x-show="dropdownOpen" 
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-64 origin-top-right bg-white dark:bg-gray-900 border border-slate-100 dark:border-gray-800 rounded-[2rem] shadow-2xl z-50 overflow-hidden"
+                     x-cloak>
+                    <div class="py-2">
+                        <div class="px-6 py-3 border-b border-slate-50 dark:border-gray-800 mb-1">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">O que deseja criar?</p>
+                        </div>
+                        <div class="max-h-80 overflow-y-auto custom-scrollbar">
+                            {% for ct in content_types %}
+                                <form action="{% url 'content:dashboard' site.url %}{% if parent %}{{parent.path}}{% endif %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="content" value="{{ct.tipo}}">
+                                    <input type="hidden" name="action" value="create">
+                                    <button type="submit" class="w-full flex items-center gap-3 px-6 py-3.5 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-600 transition-all uppercase tracking-widest group">
+                                        <div class="h-8 w-8 bg-slate-50 dark:bg-gray-800 rounded-xl flex items-center justify-center group-hover:bg-white dark:group-hover:bg-indigo-600 transition-colors shadow-sm">
+                                            <i class="fas fa-file-circle-plus opacity-40 group-hover:opacity-100 text-xs"></i>
+                                        </div>
+                                        {{ ct.descricao }}
+                                    </button>
+                                </form>
+                            {% empty %}
+                                <div class="px-6 py-8 text-center">
+                                    <i class="fas fa-layer-group text-slate-200 text-2xl mb-2"></i>
+                                    <p class="text-[10px] text-slate-400 italic">Nenhum tipo disponível</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation & Explorer Area -->
+    <div class="space-y-6">
+        <!-- Breadcrumbs & Search -->
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4 bg-white dark:bg-gray-900 p-4 rounded-[2rem] border border-slate-100 dark:border-gray-800 shadow-sm">
+            <nav class="flex items-center gap-2 overflow-x-auto px-2">
+                <a href="{% url 'content:dashboard' site.url %}" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group">
+                    <i class="fas fa-home text-xs text-slate-400 group-hover:text-indigo-500"></i>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-600">Raiz</span>
+                </a>
+                
+                {% for crumb in breadcrumbs %}
+                    <i class="fas fa-chevron-right text-[8px] text-slate-300"></i>
+                    <a href="{% url 'content:dashboard' site.url crumb.path %}" class="px-3 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group">
+                        <span class="text-[10px] font-black {% if forloop.last %}text-indigo-600{% else %}text-slate-400 group-hover:text-slate-600{% endif %} uppercase tracking-widest">
+                            {{ crumb.titulo }}
+                        </span>
+                    </a>
+                {% endfor %}
+            </nav>
+
+            <form method="GET" class="relative w-full lg:w-96 group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                    <i class="fas fa-search text-xs"></i>
+                </div>
+                <input type="text" name="q" value="{{ search_query|default:'' }}" 
+                       placeholder="Buscar nesta pasta..." 
+                       class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-gray-800 border-none rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+            </form>
+        </div>
+
+        <!-- Content Table (Explorer) -->
+        <div class="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] border-b border-slate-50 dark:border-gray-800">
+                            <th class="px-8 py-5">Nome do Conteúdo</th>
+                            <th class="px-8 py-5">Tipo</th>
+                            <th class="px-8 py-5 text-center">Status</th>
+                            <th class="px-8 py-5 text-right">Última Atualização</th>
+                            <th class="px-8 py-5 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50 dark:divide-gray-800">
+                        {% if parent %}
+                            <!-- Back Button -->
+                            <tr class="group hover:bg-slate-50/50 dark:hover:bg-gray-800/30 transition-all">
+                                <td colspan="5" class="px-8 py-4">
+                                    <a href="{% if parent.parent %}{% url 'content:dashboard' site.url parent.parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="flex items-center gap-3 text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:text-indigo-700 transition-colors">
+                                        <i class="fas fa-level-up-alt rotate-90"></i>
+                                        Voltar para pasta anterior
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% for content in catalogs %}
+                        <tr class="group hover:bg-slate-50/80 dark:hover:bg-gray-800/50 transition-all">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-gray-800 text-slate-400 group-hover:bg-white dark:group-hover:bg-gray-700 group-hover:text-indigo-500 transition-all shadow-sm">
+                                        {% if content.tipo == 'ATFolder' or content.children.exists %}
+                                            <i class="fas fa-folder text-xl"></i>
+                                        {% else %}
+                                            <i class="fas fa-file-lines text-xl"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        {% if content.tipo == 'ATFolder' or content.children.exists %}
+                                            <a href="{% url 'content:dashboard' site.url content.path %}" class="text-sm font-black text-slate-800 dark:text-white hover:text-indigo-600 transition-colors">
+                                                {{ content.titulo }}
+                                            </a>
+                                        {% else %}
+                                            <p class="text-sm font-black text-slate-800 dark:text-white">{{ content.titulo }}</p>
+                                        {% endif %}
+                                        <p class="text-[10px] text-slate-400 font-mono tracking-tight">{{ content.url }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-gray-800 px-2 py-1 rounded-md">
+                                    {{ content.get_tipo_display|default:content.tipo }}
+                                </span>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider 
+                                    {% if content.workflow == 'Publico' %}bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400
+                                    {% else %}bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400{% endif %}">
+                                    {{ content.workflow }}
+                                </span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <p class="text-xs font-bold text-slate-600 dark:text-slate-300">{{ content.update_at|date:"d/m/Y" }}</p>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-tight">{{ content.update_at|date:"H:i" }}</p>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                    <form action="{% url 'content:dashboard' site.url %}{% if parent %}{{parent.path}}{% endif %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="content" value="{{content.tipo}}">
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="content_id" value="{{content.id}}">
+                                        <button type="submit" class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all" title="Editar">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                    </form>
+                                    <button class="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all" title="Excluir">
+                                        <i class="fas fa-trash-alt text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-8 py-24 text-center">
+                                <div class="max-w-xs mx-auto">
+                                    <div class="h-20 w-20 bg-slate-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-folder-open text-2xl text-slate-200"></i>
+                                    </div>
+                                    <p class="text-sm font-black text-slate-400 uppercase tracking-widest">Pasta Vazia</p>
+                                    <p class="text-xs text-slate-300 mt-2">Nenhum conteúdo encontrado nesta localização. Comece criando um novo item!</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="flex items-center gap-4 p-6 bg-slate-50 dark:bg-gray-800/50 rounded-3xl border border-slate-100 dark:border-gray-800">
+            <div class="h-10 w-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div>
+                <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Dica de Navegação</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">
+                    Clique no nome de uma pasta para navegar para dentro dela. O caminho de navegação (breadcrumbs) acima ajuda você a se localizar e voltar rapidamente para níveis superiores.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

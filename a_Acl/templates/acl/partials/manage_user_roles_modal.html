@@ -1,0 +1,54 @@
+{% load static %}
+
+<div class="p-8 space-y-8 animate-fade-in-up">
+    <!-- User Brief Info -->
+    <div class="flex items-center gap-6 p-6 bg-slate-50 dark:bg-gray-800/50 rounded-3xl border border-slate-100 dark:border-gray-800">
+        <div class="h-16 w-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">
+            {{ member.user.first_name|slice:":1" }}{{ member.user.last_name|slice:":1" }}
+        </div>
+        <div>
+            <h4 class="text-lg font-black text-slate-900 dark:text-white">{{ member.user.get_full_name }}</h4>
+            <p class="text-sm text-slate-500 font-medium">{{ member.user.email }}</p>
+        </div>
+    </div>
+
+    <!-- Roles Selection Form -->
+    <form hx-post="{% url 'acl:manage-user-roles' site.url member.id %}" 
+          hx-target="#member-row-{{ member.id }}" 
+          hx-swap="outerHTML"
+          @submit="modalOpen = false"
+          class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="space-y-4">
+            <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Atribuir Papéis (Roles)</label>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {% for choice in form.roles %}
+                    <label class="flex items-center gap-4 p-4 bg-white dark:bg-gray-900 rounded-2xl border border-slate-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-md transition-all cursor-pointer group">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" name="{{ choice.data.name }}" value="{{ choice.data.value }}" 
+                                   {% if choice.data.selected %}checked{% endif %}
+                                   class="checkbox-field">
+                        </div>
+                        <div class="flex-grow">
+                            <span class="block text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 transition-colors">{{ choice.choice_label }}</span>
+                        </div>
+                        <i class="fas fa-shield-alt text-xs text-slate-200 group-hover:text-indigo-200 transition-colors"></i>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-50 dark:border-gray-800">
+            <button type="button" @click="modalOpen = false" class="px-6 py-2.5 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all">
+                Cancelar
+            </button>
+            <button type="submit" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                <i class="fas fa-save text-sm"></i>
+                Salvar Papéis
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,148 @@
+{% extends 'comum/Base.html' %}
+{% load widget_tweaks static %}
+
+{% block titulo %}Nova Página | {{ site.titulo }}{% endblock %}
+
+{% block body_content %}
+<div class="p-6 animate-fade-in-up">
+    <!-- Header Section -->
+    <div class="mb-8 max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between items-center gap-6">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fas fa-file-circle-plus text-lg"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Nova Página</h1>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Criando novo conteúdo para <strong>{{ site.titulo }}</strong>.</p>
+        </div>
+
+        <div>
+            <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+                <i class="fas fa-times text-red-500"></i>
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Area -->
+    <div class="max-w-4xl mx-auto">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
+                {% for error in form.non_field_errors %}
+                <p class="text-sm text-red-600 dark:text-red-400 font-bold flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i> {{ error }}
+                </p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="card-base p-8 sm:p-10 space-y-8">
+                <!-- Basic Info Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Titulo -->
+                    <div class="form-group md:col-span-2">
+                        <label for="{{ form.titulo.id_for_label }}" class="form-label ml-1">Título da Página</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-heading text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                            </div>
+                            {% render_field form.titulo class="input-field" placeholder="Ex: Sobre a Instituição" %}
+                        </div>
+                        {% if form.titulo.errors %}
+                            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.titulo.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- URL / Slug -->
+                    <div class="form-group md:col-span-2">
+                        <label for="{{ form.url.id_for_label }}" class="form-label ml-1">URL amigável (Slug)</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-link text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                            </div>
+                            {% render_field form.url class="input-field font-mono" placeholder="sobre-a-instituicao" %}
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-medium ml-1 mt-1 uppercase tracking-tight italic">Apenas letras minúsculas, números e hífens.</p>
+                        {% if form.url.errors %}
+                            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.url.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="{{ form.descricao.id_for_label }}" class="form-label ml-1">Descrição Curta (Sumário)</label>
+                    {% render_field form.descricao class="textarea-field h-24" placeholder="Uma breve descrição que aparecerá em listagens..." %}
+                    {% if form.descricao.errors %}
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.descricao.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Body Content -->
+                <div class="form-group">
+                    <label for="{{ form.corpo.id_for_label }}" class="form-label ml-1">Corpo da Página</label>
+                    {% render_field form.corpo class="textarea-field min-h-[300px]" placeholder="Escreva aqui o conteúdo principal da sua página..." %}
+                    {% if form.corpo.errors %}
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.corpo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800">
+                        <div class="flex items-center h-6">
+                            {% render_field form.show_in_menu class="checkbox-field" %}
+                        </div>
+                        <div class="text-sm">
+                            <label for="{{ form.show_in_menu.id_for_label }}" class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">Mostrar no Menu</label>
+                            <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Marque para que esta página apareça automaticamente no menu principal.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800">
+                        <div class="flex items-center h-6">
+                            {% render_field form.excluir_nav class="checkbox-field" %}
+                        </div>
+                        <div class="text-sm">
+                            <label for="{{ form.excluir_nav.id_for_label }}" class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">Excluir da Navegação</label>
+                            <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Oculta a página da navegação interna (breadcrumbs e listagens).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Area -->
+                <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="btn-primary flex-1 group">
+                        <i class="fas fa-save mr-2 group-hover:shake"></i>
+                        SALVAR PÁGINA
+                    </button>
+                    <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="btn-secondary sm:px-12 text-center">
+                        VOLTAR
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tip Card -->
+        <div class="mt-8 flex items-center gap-4 p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/20">
+            <div class="h-10 w-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div>
+                <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Dica de SEO</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">
+                    Utilize palavras-chave importantes no <strong>Título</strong> e no <strong>Slug</strong>. Isso ajuda motores de busca como o Google a encontrar seu conteúdo mais facilmente.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{
+  "name": "manager_main",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev" : "npx @tailwindcss/cli -i ./staticfiles/comum/src/input.css -o ./staticfiles/comum/css/portal-manager.css -w",
+    "build" : "npx @tailwindcss/cli -i ./staticfiles/comum/src/input.css -o ./staticfiles/comum/css/portal-manager.css --minify"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.8",
+    "tailwindcss": "^4.0.8"
+  }
+}

@@ -1,0 +1,130 @@
+{% extends 'site/open_site.html' %}
+{% load static %}
+
+{% block site_content %}
+<div class="space-y-8">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Redes Sociais</h2>
+            <p class="text-sm text-slate-500">Conecte seu portal com suas redes e canais de comunicação.</p>
+        </div>
+    </div>
+
+    <!-- Social Links Form Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+        <form method="POST" class="p-8 space-y-8">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                
+                <!-- Facebook -->
+                <div class="space-y-2">
+                    <label for="{{ form.facebook_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Facebook</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#1877F2]">
+                            <i class="fab fa-facebook-f text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.facebook_link }}
+                    </div>
+                    {% if form.facebook_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.facebook_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Twitter / X -->
+                <div class="space-y-2">
+                    <label for="{{ form.twitter_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Twitter / X</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#1DA1F2]">
+                            <i class="fab fa-twitter text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.twitter_link }}
+                    </div>
+                    {% if form.twitter_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.twitter_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- YouTube -->
+                <div class="space-y-2">
+                    <label for="{{ form.youtube_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">YouTube</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#FF0000]">
+                            <i class="fab fa-youtube text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.youtube_link }}
+                    </div>
+                    {% if form.youtube_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.youtube_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Google Plus / Business -->
+                <div class="space-y-2">
+                    <label for="{{ form.google_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Google Perfil</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#4285F4]">
+                            <i class="fab fa-google text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.google_link }}
+                    </div>
+                    {% if form.google_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.google_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Flickr -->
+                <div class="space-y-2">
+                    <label for="{{ form.flicker_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Flickr</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#0063DC]">
+                            <i class="fab fa-flickr text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.flicker_link }}
+                    </div>
+                    {% if form.flicker_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.flicker_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- RSS Feed -->
+                <div class="space-y-2">
+                    <label for="{{ form.rss_link.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Feed RSS</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#FFA500]">
+                            <i class="fas fa-rss text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.rss_link }}
+                    </div>
+                    {% if form.rss_link.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.rss_link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-50">
+                <a href="{% url 'site:open-site' site.url %}" class="px-6 py-2.5 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                    <i class="fas fa-save text-sm"></i>
+                    Salvar Links
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Security Tip Card -->
+    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-4">
+        <div class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm shrink-0">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">Privacidade e Segurança</h4>
+            <p class="text-xs text-slate-500 leading-relaxed mt-1">Certifique-se de que os links inseridos levam para perfis oficiais do portal. Links maliciosos ou incorretos podem comprometer a confiança dos seus usuários.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

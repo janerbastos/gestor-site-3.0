@@ -1,0 +1,46 @@
+{% if users_found %}
+    <div class="divide-y divide-slate-50 dark:divide-gray-800">
+        {% for user in users_found %}
+            <div class="flex items-center justify-between p-6 hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-all group animate-fade-in-up">
+                <div class="flex items-center gap-4">
+                    <div class="h-10 w-10 bg-gradient-to-tr from-slate-200 to-slate-300 dark:from-gray-700 dark:to-gray-600 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 font-black text-sm shadow-sm group-hover:scale-110 transition-transform">
+                        {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-slate-800 dark:text-white">{{ user.get_full_name }}</p>
+                        <p class="text-[11px] text-slate-400 font-medium">{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <form method="POST" 
+                      hx-post="{% url 'acl:manage-site-user' site.url %}" 
+                      hx-target="closest div" 
+                      hx-swap="outerHTML swap:0.5s">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_user">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" class="px-4 py-2 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 hover:border-green-500 hover:text-green-600 dark:hover:border-green-400 dark:hover:text-green-400 rounded-xl text-xs font-black text-slate-400 uppercase tracking-widest transition-all shadow-sm flex items-center gap-2">
+                        <i class="fas fa-user-plus"></i>
+                        Adicionar
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% elif search_query %}
+    <div class="p-20 text-center animate-fade-in-up">
+        <div class="h-16 w-16 bg-slate-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user-slash text-xl text-slate-200"></i>
+        </div>
+        <p class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Nenhum usuário encontrado</p>
+        <p class="text-[10px] text-slate-300 mt-2">Verifique o nome ou e-mail digitado.</p>
+    </div>
+{% else %}
+    <div class="p-20 text-center animate-fade-in-up">
+        <div class="h-16 w-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-search text-xl text-indigo-200"></i>
+        </div>
+        <p class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Inicie uma busca</p>
+        <p class="text-[10px] text-slate-300 mt-2">Digite um nome ou e-mail para encontrar usuários globais.</p>
+    </div>
+{% endif %}

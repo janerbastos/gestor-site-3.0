@@ -1,0 +1,62 @@
+{% extends 'comum/Base.html' %}
+{% load static %}
+
+{% block body_content %}
+<div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <!-- Brand Identity -->
+        <div class="flex flex-col items-center mb-10">
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-red-500/10 mb-6 border border-slate-100 dark:border-gray-700 transition-transform hover:scale-105 duration-300">
+                <i class="fas fa-user-minus text-4xl text-red-600"></i>
+            </div>
+            <h2 class="text-3xl font-black text-center text-slate-900 dark:text-white tracking-tight uppercase">Remover Membro</h2>
+            <p class="mt-2 text-center text-sm text-slate-500 dark:text-gray-400 font-medium">O usuário perderá o acesso a este portal</p>
+        </div>
+
+        <!-- Confirmation Card -->
+        <div class="bg-white dark:bg-gray-900 rounded-[2rem] shadow-2xl shadow-slate-200/60 dark:shadow-none border border-slate-100 dark:border-gray-800 p-8 sm:p-10">
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 dark:bg-red-900/20 mb-4">
+                    <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Confirmar Remoção?</h3>
+                <p class="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">
+                    Você está prestes a remover o acesso de <br>
+                    <span class="font-black text-slate-900 dark:text-white underline decoration-red-500 decoration-2">{{ autorizacao.user.get_full_name }}</span><br>
+                    <span class="text-xs font-mono opacity-60">({{ autorizacao.user.email }})</span>
+                </p>
+            </div>
+
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                
+                <button type="submit" class="btn-danger group w-full uppercase tracking-widest">
+                    <i class="fas fa-trash-alt mr-2 group-hover:shake transition-transform"></i>
+                    Confirmar Remoção
+                </button>
+                
+                <a href="{% url 'acl:list-users' site.url %}" class="btn-secondary w-full uppercase tracking-widest">
+                    Cancelar e Voltar
+                </a>
+            </form>
+
+            <div class="mt-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl">
+                <p class="text-[10px] font-black text-amber-800 dark:text-amber-500 uppercase tracking-widest flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> Aviso de Segurança
+                </p>
+                <p class="mt-1 text-[11px] text-amber-700 dark:text-amber-400/80 leading-relaxed">
+                    Ao remover este membro, todos os papéis e permissões vinculados a ele neste site específico serão revogados imediatamente. Ele continuará tendo sua conta no sistema, mas não poderá gerenciar o portal <strong>{{ site.titulo }}</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="mt-12 flex flex-col items-center space-y-4">
+            <p class="text-center text-[10px] font-black text-slate-400 dark:text-gray-600 uppercase tracking-[0.4em]">
+                &copy; 2026 UFOPA &bull; CTIC
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

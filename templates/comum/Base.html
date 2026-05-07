@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    {% if site and site.favicon %}
+      <link rel="icon" type="image/png" href="{{ site.favicon.url }}">
+    {% else %}
+      <link rel="icon" href="{% static 'img/favicon.svg' %}">
+    {% endif %}
+
+    <title>{% block titulo %}{{ site.titulo|default:"Gerenciador de Conteúdo" }}{% endblock %} | Gestor Sites 3.0</title>
+
+    <!-- Modern Typography: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+    <!-- Tailwind CSS (Static Compiled) -->
+    <link rel="stylesheet" href="{% static 'css/portal-manager.css' %}"/>
+
+    <!-- AlPine JS -->
+    <script src="{% static 'js/alpine.js' %}"></script>
+    <!-- Htmx JS -->
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+
+    {% block head %} {% endblock %}
+    {% block extra_css %} {% endblock %}
+</head>
+<body class="h-full {% block body_class %}{% endblock %}" x-data="{ sidebarOpen: false }">
+
+    {% block body_content %}
+    <!-- Sidebar (Fixed) -->
+    {% block sidebar %}
+        {% include 'comum/partials/sidbar.html' %}
+    {% endblock %}
+
+    <!-- Content Area (Dynamic Padding) -->
+    <div :class="{ 'lg:pl-64': sidebarOpen, 'lg:pl-20': !sidebarOpen }" 
+         class="min-h-screen flex flex-col transition-all duration-300 ease-in-out">
+        
+        {% block navbar %}
+            {% include 'comum/partials/navbar.html' %}
+        {% endblock %}
+
+        <main class="flex-grow {% block main_class %}{% endblock %}">
+            {% block main %}
+            {% endblock %}
+        </main>
+
+        {% block footer %}
+        {% endblock %}
+    </div>
+    {% endblock body_content %}
+
+    {% block modal %} {% endblock %}
+
+    <!-- Core Scripts -->
+    {% block extra_js %} {% endblock %}
+
+</body>
+</html>

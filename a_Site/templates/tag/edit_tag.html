@@ -1,0 +1,82 @@
+{% extends 'site/open_site.html' %}
+{% load static %}
+
+{% block site_content %}
+<div class="max-w-3xl space-y-8">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Editar Tag</h2>
+            <p class="text-sm text-slate-500">Atualize as informações da tag <span class="font-bold text-indigo-600">{{ tag.titulo }}</span>.</p>
+        </div>
+    </div>
+
+    <!-- Tag Form Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+        <form method="POST" class="p-8 space-y-8">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-xs text-red-600 font-bold">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="space-y-6">
+                <!-- Tag (Slug) Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.tag.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Identificador (Slug)</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
+                            <i class="fas fa-terminal text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.tag }}
+                    </div>
+                    {% if form.tag.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.tag.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-[10px] text-slate-400 mt-1">Lembre-se: alterar o identificador pode quebrar links antigos que usam esta tag.</p>
+                </div>
+
+                <!-- Titulo Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.titulo.id_for_label }}" class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Título Exibido</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-indigo-600">
+                            <i class="fas fa-tag text-lg opacity-40 group-focus-within:opacity-100"></i>
+                        </div>
+                        {{ form.titulo }}
+                    </div>
+                    {% if form.titulo.errors %}
+                        <p class="mt-1 text-[10px] text-red-500 font-bold">{{ form.titulo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-50">
+                <a href="{% url 'site:list-tag' site.url %}" class="px-6 py-2.5 text-xs font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest">
+                    <i class="fas fa-save text-sm"></i>
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Usage Info Card -->
+    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-4">
+        <div class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm shrink-0">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">Impacto da Alteração</h4>
+            <p class="text-xs text-slate-500 leading-relaxed mt-1">Ao atualizar uma tag, todas as publicações vinculadas a ela serão atualizadas automaticamente para refletir o novo título ou identificador.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

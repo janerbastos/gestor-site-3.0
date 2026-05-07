@@ -1,0 +1,107 @@
+{% extends 'comum/Base.html' %}
+{% load static %}
+
+{% block titulo %}Dashboard de Sites{% endblock %}
+
+{% block main %}
+<div class="p-6 space-y-6">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Meus Sites</h1>
+            <p class="text-gray-500 text-sm">Gerencie e visualize todos os seus portais em um só lugar.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{% url 'site:create-site' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                <i class="fas fa-plus mr-2 text-xs"></i>
+                Novo Site
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <form method="GET" action="" class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400 group-focus-within:text-indigo-500 transition-colors"></i>
+            </div>
+            <input type="text" name="q" value="{{ request.GET.q|default:'' }}" 
+                   class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm placeholder-gray-400 transition-all" 
+                   placeholder="Buscar por título, descrição ou URL...">
+        </form>
+    </div>
+
+    <!-- Sites Grid/List -->
+    {% if sites %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for site in sites %}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+            <div class="h-32 bg-gray-100 relative">
+                {% if site.favicon %}
+                <div class="absolute inset-0 flex items-center justify-center p-6">
+                    <img src="{{ site.favicon.url }}" alt="{{ site.titulo }}" class="max-h-full max-w-full object-contain">
+                </div>
+                {% else %}
+                <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+                    <i class="fas fa-globe text-indigo-200 text-4xl"></i>
+                </div>
+                {% endif %}
+                <div class="absolute top-2 right-2 flex gap-1">
+                    <a href="{% url 'site:edit-site' site.url %}" class="p-1.5 bg-white/90 backdrop-blur-sm rounded-md text-gray-600 hover:text-indigo-600 shadow-sm transition-colors" title="Editar">
+                        <i class="fas fa-edit text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="p-4 flex-grow flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-gray-800 line-clamp-1" title="{{ site.titulo }}">{{ site.titulo }}</h3>
+                </div>
+                <p class="text-xs text-gray-500 line-clamp-2 mb-4 flex-grow">{{ site.descricao|default:"Sem descrição disponível." }}</p>
+                
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                    <div class="flex flex-col gap-1">
+                        <a href="{% url 'site:open-site' site.url %}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center transition-colors">
+                            <i class="fas fa-tachometer-alt mr-1.5 opacity-70"></i>
+                            Gerenciar Portal
+                        </a>
+                        <a href="{{ site.url }}" target="_blank" class="text-[10px] font-medium text-slate-400 hover:text-slate-600 flex items-center transition-colors">
+                            <i class="fas fa-external-link-alt mr-1.5 opacity-70"></i>
+                            Ver Online
+                        </a>
+                    </div>
+                    <div class="flex items-center text-[10px] text-gray-400">
+                        <i class="far fa-clock mr-1"></i>
+                        {{ site.created_at|date:"d/m/Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include 'site/components/paginator.html' %}
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-xl border border-dashed border-gray-300 p-12 flex flex-col items-center justify-center text-center">
+        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-globe-americas text-gray-300 text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">Nenhum site encontrado</h3>
+        <p class="text-gray-500 max-w-sm mt-1">
+            {% if request.GET.q %}
+            Não encontramos resultados para "{{ request.GET.q }}". Tente outros termos.
+            {% else %}
+            Você ainda não cadastrou nenhum site. Comece criando o seu primeiro portal agora mesmo.
+            {% endif %}
+        </p>
+        <div class="mt-6">
+            <a href="{% url 'site:create-site' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                <i class="fas fa-plus mr-2 text-xs"></i>
+                Cadastrar Primeiro Site
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

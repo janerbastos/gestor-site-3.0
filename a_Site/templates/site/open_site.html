@@ -1,0 +1,201 @@
+{% extends 'comum/Base.html' %}
+{% load static %}
+
+{% block titulo %}Gerenciar: {{ site.titulo }}{% endblock %}
+
+{% block main %}
+<div class="p-6">
+    <!-- Site Header Section -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="flex items-center gap-6">
+            <div class="h-20 w-20 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center overflow-hidden">
+                {% if site.favicon %}
+                    <img src="{{ site.favicon.url }}" alt="{{ site.titulo }}" class="max-h-12 max-w-12 object-contain">
+                {% else %}
+                    <i class="fas fa-globe text-3xl text-indigo-100"></i>
+                {% endif %}
+            </div>
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <h1 class="text-3xl font-black text-slate-900">{{ site.titulo }}</h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {% if site.status == 'publicado' %}bg-green-100 text-green-700{% else %}bg-amber-100 text-amber-700{% endif %}">
+                        {{ site.show_status|default:"Rascunho" }}
+                    </span>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-slate-500">
+                    <a href="{{ site.url }}" target="_blank" class="hover:text-indigo-600 flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-external-link-alt text-xs"></i>
+                        {{ site.url }}
+                    </a>
+                    <span class="h-1 w-1 bg-slate-300 rounded-full"></span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="far fa-calendar-alt text-xs"></i>
+                        Criado em {{ site.create_at|date:"d/m/Y \à\s H:i" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <a href="{% url 'site:edit-site' site.url %}" class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl border border-slate-200 transition-all flex items-center shadow-sm">
+                <i class="fas fa-cog mr-2 text-xs opacity-50"></i>
+                Configurações
+            </a>
+            <a href="{{ site.url }}" target="_blank" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-all flex items-center shadow-lg shadow-indigo-500/20">
+                <i class="fas fa-eye mr-2 text-xs"></i>
+                Visualizar Site
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Local Navigation Sidebar -->
+        <aside class="lg:col-span-3 space-y-2">
+            <div class="bg-white rounded-3xl border border-slate-100 p-3 shadow-sm">
+                <p class="px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Menu de Gestão</p>
+                
+                <nav class="space-y-1">
+                    <a href="{% url 'site:open-site' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'open-site' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all">
+                        <i class="fas fa-th-large w-5 opacity-70"></i>
+                        Visão Geral
+                    </a>
+                    <a href="{% url 'content:dashboard' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.app_name == 'content' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-folder-open w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Gestor de Conteúdo
+                    </a>
+                    <a href="{% url 'site:edit-site-content-type' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'edit-site-content-type' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-file-alt w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Tipos de Conteúdo
+                    </a>
+                    <a href="{% url 'site:edit-site-endereco' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'edit-site-endereco' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-map-marker-alt w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Endereço e Contato
+                    </a>
+                    <a href="{% url 'site:edit-site-midia' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'edit-site-midia' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-images w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Mídia e Arquivos
+                    </a>
+                    <a href="{% url 'site:list-tag' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'list-tag' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-tags w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Tags e Categorias
+                    </a>
+                    <a href="{% url 'site:edit-site-redesocial-link' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'edit-site-redesocial-link' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-share-alt w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Redes Sociais
+                    </a>
+                    <a href="{% url 'site:edit-site-codigo-script' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'edit-site-redesocial-cod' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-code w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Códigos e Scripts
+                    </a>
+                    <a href="{% url 'acl:list-users' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold {% if request.resolver_match.url_name == 'manage-site-user' %}bg-indigo-50 text-indigo-700{% else %}text-slate-600 hover:bg-slate-50 hover:text-indigo-600{% endif %} rounded-2xl transition-all group">
+                        <i class="fas fa-users w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Equipe e Permissões
+                    </a>
+                    <div class="h-px bg-slate-50 my-2 mx-4"></div>
+                    <a href="{% url 'site:edit-site' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 rounded-2xl transition-all group">
+                        <i class="fas fa-sliders-h w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Preferências
+                    </a>
+                    <a href="{% url 'site:delete-site' site.url %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all group">
+                        <i class="fas fa-trash-alt w-5 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                        Excluir Portal
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Stats Mini Card -->
+            <div class="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl p-6 text-white shadow-xl shadow-indigo-500/20">
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-4">Armazenamento</p>
+                <div class="flex items-end justify-between mb-2">
+                    <span class="text-2xl font-black">42%</span>
+                    <span class="text-[10px] font-bold opacity-80 uppercase">8.4GB / 20GB</span>
+                </div>
+                <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-white rounded-full w-[42%] shadow-sm"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="lg:col-span-9 space-y-8">
+            <!-- Quick Stats Grid -->
+             {% block site_content %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Acessos Hoje</p>
+                        <p class="text-xl font-black text-slate-900">1.284</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="h-12 w-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Páginas</p>
+                        <p class="text-xl font-black text-slate-900">24</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="h-12 w-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Publicações</p>
+                        <p class="text-xl font-black text-slate-900">156</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Card -->
+            <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
+                    <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Atividade Recente</h3>
+                    <button class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors uppercase tracking-widest">Ver Tudo</button>
+                </div>
+                <div class="p-4">
+                    <div class="space-y-1">
+                        <!-- Activity Item -->
+                        <div class="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all group">
+                            <div class="h-10 w-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-sm font-bold text-slate-800">Página "Quem Somos" atualizada</p>
+                                <p class="text-[11px] text-slate-500">Por João Silva • Há 15 minutos</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all group">
+                            <div class="h-10 w-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-sm font-bold text-slate-800">Nova notícia publicada: "Vestibular 2026"</p>
+                                <p class="text-[11px] text-slate-500">Por Maria Souza • Há 2 horas</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-all group">
+                            <div class="h-10 w-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-sm font-bold text-slate-800">5 novos arquivos de imagem enviados</p>
+                                <p class="text-[11px] text-slate-500">Por Sistema • Ontem às 18:30</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-[10px] text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}

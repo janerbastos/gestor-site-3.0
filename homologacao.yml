@@ -1,0 +1,36 @@
+services:
+
+  application:
+    build: .
+    container_name: django_mamba
+    hostname: django_mamba.ufopa.edu.br
+    restart: unless-stopped
+    ports:
+      - 8090:443
+    volumes:
+      - static_files:/home/mamba/staticfiles/
+    networks:
+      - homologacao_network
+  
+  memcached:
+    image: memcached:alpine
+    restart: always
+    container_name: memcached
+    command: memcached -p 11211 -u memcache -m 512 -c 1024 -t 1
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+    networks:
+      - homologacao_network
+    
+volumes:
+  static_files:
+    name: static_files
+
+networks:
+  homologacao_network:
+    name: homologacao_network
+    external: true

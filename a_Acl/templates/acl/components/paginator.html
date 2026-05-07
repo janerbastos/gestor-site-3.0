@@ -1,0 +1,75 @@
+{% if users.has_other_pages %}
+<div class="bg-white dark:bg-gray-800 px-8 py-5 border-t border-slate-50 dark:border-gray-700/50 flex items-center justify-between">
+    <!-- Mobile Pagination -->
+    <div class="flex-1 flex justify-between sm:hidden">
+        {% if users.has_previous %}
+            <a href="?q={{ request.GET.q|default:'' }}&page={{ users.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-slate-200 dark:border-gray-700 text-sm font-bold rounded-xl text-slate-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-slate-50 transition-colors">
+                Anterior
+            </a>
+        {% else %}
+            <span class="relative inline-flex items-center px-4 py-2 border border-slate-100 dark:border-gray-800 text-sm font-bold rounded-xl text-slate-300 dark:text-gray-600 bg-white dark:bg-gray-800 cursor-not-allowed">
+                Anterior
+            </span>
+        {% endif %}
+
+        {% if users.has_next %}
+            <a href="?q={{ request.GET.q|default:'' }}&page={{ users.next_page_number }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-200 dark:border-gray-700 text-sm font-bold rounded-xl text-slate-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-slate-50 transition-colors">
+                Próximo
+            </a>
+        {% else %}
+            <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-100 dark:border-gray-800 text-sm font-bold rounded-xl text-slate-300 dark:text-gray-600 bg-white dark:bg-gray-800 cursor-not-allowed">
+                Próximo
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- Desktop Pagination -->
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+            <p class="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest">
+                Mostrando <span class="text-slate-900 dark:text-white">{{ users.start_index }}</span> a <span class="text-slate-900 dark:text-white">{{ users.end_index }}</span> de <span class="text-slate-900 dark:text-white">{{ users.paginator.count }}</span> resultados
+            </p>
+        </div>
+        <div>
+            <nav class="relative z-0 inline-flex rounded-xl shadow-sm space-x-2" aria-label="Pagination">
+                <!-- Previous Page -->
+                {% if users.has_previous %}
+                    <a href="?q={{ request.GET.q|default:'' }}&page={{ users.previous_page_number }}" class="relative inline-flex items-center p-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-slate-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all">
+                        <span class="sr-only">Anterior</span>
+                        <i class="fas fa-chevron-left text-xs"></i>
+                    </a>
+                {% else %}
+                    <span class="relative inline-flex items-center p-2 rounded-xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-800 text-sm font-medium text-slate-200 dark:text-gray-700 cursor-not-allowed">
+                        <i class="fas fa-chevron-left text-xs"></i>
+                    </span>
+                {% endif %}
+
+                <!-- Page Numbers -->
+                {% for i in users.paginator.page_range %}
+                    {% if users.number == i %}
+                        <span class="relative inline-flex items-center px-4 py-2 rounded-xl border border-blue-600 bg-blue-600 text-sm font-black text-white shadow-lg shadow-blue-500/20 z-10">
+                            {{ i }}
+                        </span>
+                    {% elif i > users.number|add:'-3' and i < users.number|add:'3' %}
+                        <a href="?q={{ request.GET.q|default:'' }}&page={{ i }}" class="relative inline-flex items-center px-4 py-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-bold text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-gray-700/50 hover:text-slate-700 dark:hover:text-white transition-all">
+                            {{ i }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next Page -->
+                {% if users.has_next %}
+                    <a href="?q={{ request.GET.q|default:'' }}&page={{ users.next_page_number }}" class="relative inline-flex items-center p-2 rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-slate-500 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all">
+                        <span class="sr-only">Próximo</span>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </a>
+                {% else %}
+                    <span class="relative inline-flex items-center p-2 rounded-xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-800 text-sm font-medium text-slate-200 dark:text-gray-700 cursor-not-allowed">
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </span>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+</div>
+{% endif %}
