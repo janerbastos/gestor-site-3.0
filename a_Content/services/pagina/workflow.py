@@ -1,22 +1,17 @@
 from a_Content.models import FactoryClassModel
 
 
-class UpdatePaginaService:
-
+class WorkflowPaginaService():
     allowed_fields = [
-        'url',
-        'titulo',
-        'descricao',
-        'corpo',
-        'show_in_menu',
-        'excluir_nav',
+        'workflow',
     ]
 
     def execute(self, data):
 
         Content = FactoryClassModel.get_class('content')
 
-        content_id = data.get('id')
+        content_id = data.get('content_id')
+
 
         if not content_id:
             return 'error', 'ID não informado.'
@@ -39,10 +34,15 @@ class UpdatePaginaService:
             if updated_fields:
                 content.save(update_fields=updated_fields)
 
-            return 'success', f'Conteúdo "{content.titulo}" atualizado.'
+            return {
+                'status': 'success',
+                'message': f'Conteúdo "{content.titulo}", {content.workflow}.',
+            }
 
         except Content.DoesNotExist:
+            print('AQUI')
             return 'error', 'Conteúdo não encontrado.'
 
         except Exception as e:
+            print(str(e))
             return 'error', str(e)

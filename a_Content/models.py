@@ -11,10 +11,12 @@ class Content(models.Model):
 
     PRIVADO = 'Privado'
     PUBLICO = 'Publico'
+    REVISAO = 'Revisao'
 
     CHOICE_WORKFLOW = (
         (PRIVADO, 'Privado'),
         (PUBLICO, 'Publico'),
+        (REVISAO, 'Revisão')
     )
 
 

@@ -15,7 +15,6 @@ class ViewService():
         request.session['action'] = action
         request.session['parent_id'] = parent.id if parent else None
         request.session['content_id'] = content_id
-
         
 
         return redirect(reverse(f'content:{action}-{type_.lower()}', args=(url,)))
