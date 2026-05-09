@@ -1,7 +1,7 @@
 from a_Content.models import FactoryClassModel
 
 
-class DeletePaginaService:
+class DeletePastaService:
 
     def execute(self, data):
 
@@ -10,10 +10,7 @@ class DeletePaginaService:
         content_id = data.get('content_id')
 
         if not content_id:
-            return (
-                'error',
-                'ID do conteúdo não informado.'
-            )
+            return 'error', 'ID do conteúdo não informado.'
 
         try:
 
@@ -23,16 +20,10 @@ class DeletePaginaService:
 
             content.delete()
 
-            return (
-                'success',
-                f'Conteúdo "{titulo}" excluído permanentemente.'
-            )
+            return ('success', f'Conteúdo "{titulo}" excluído permanentemente.')
 
         except Content.DoesNotExist:
-            return 'error', 'Conteúdo não encontrado.'
+            return ('error', 'Conteúdo não encontrado.')
 
         except Exception as e:
-            return (
-                'error',
-                str(e)
-            )
+            return ('error', str(e))

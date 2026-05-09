@@ -8,8 +8,8 @@ SERVICES = {
     "ATPagina.delete"  : "a_Content.services.pagina.delete.DeletePaginaService",
     "ATPagina.workflow": "a_Content.services.pagina.workflow.WorkflowPaginaService",
 
-    "noticia.create"  : "a_Content.services.noticia.create.CreateNoticiaService",
-    "noticia.update"  : "a_Content.services.noticia.update.UpdateNoticiaService",
-    "noticia.delete"  : "a_Content.services.noticia.delete.DeleteNoticiaService",
-    "noticia.workflow": "a_Content.services.noticia.workflow.WorkflowNoticiaService",
+    "ATPasta.create"  : "a_Content.services.pasta.create.CreatePastaService",
+    "ATPasta.update"  : "a_Content.services.pasta.update.UpdatePastaService",
+    "ATPasta.delete"  : "a_Content.services.pasta.delete.DeletePastaService",
+    "ATPasta.workflow": "a_Content.services.pasta.workflow.WorkflowPastaService",
 }

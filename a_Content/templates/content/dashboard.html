@@ -47,7 +47,7 @@
                         </div>
                         <div class="max-h-80 overflow-y-auto custom-scrollbar">
                             {% for ct in content_types %}
-                                <form action="{% url 'content:dashboard' site.url %}{% if parent %}{{parent.path}}{% endif %}" method="post">
+                                <form action="{% url 'content:dashboard' site.url %}{% if parent %}@@{{parent.path}}/{% endif %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="content" value="{{ct.tipo}}">
                                     <input type="hidden" name="action" value="create">

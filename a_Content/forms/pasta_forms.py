@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
-class ATPaginaCreateForm(forms.Form):
+class ATPastaCreateForm(forms.Form):
 
     url = forms.SlugField(max_length=255, required=False)
     titulo = forms.CharField(max_length=255)
@@ -11,14 +11,7 @@ class ATPaginaCreateForm(forms.Form):
         label='Descrição',
         widget=forms.Textarea(attrs={
             'rows': 4,
-            'placeholder': 'Sumário da pagina'
-        }))
-    corpo = forms.CharField(
-        required=False,
-        label='Corpo da página',
-        widget=forms.Textarea(attrs={
-            'rows': 10,
-            'placeholder': 'Corpo da pagina'
+            'placeholder': 'Sumário da pasta'
         }))
     show_in_menu = forms.BooleanField(
         label="Mostrar no menu",
@@ -33,10 +26,10 @@ class ATPaginaCreateForm(forms.Form):
 
 
 # Metodo fabrica
-class FactoryATPageForm:
+class FactoryATPastaForm:
 
     _class = {
-        'create': ATPaginaCreateForm,
+        'create': ATPastaCreateForm,
 
     }
 

@@ -141,6 +141,7 @@ class Site(models.Model):
 class ContentType(models.Model):
 
     ATPAGINA  = 'ATPagina'
+    ATPASTA   = 'ATPasta'
     ATNOTICIA = 'ATNoticia'
     ATINFORME = 'ATInforme'
     ATLINK    = 'ATLink'
@@ -156,6 +157,7 @@ class ContentType(models.Model):
         ('', ''),
         (ATPAGINA, 'Páginas'),
         (ATNOTICIA, 'Notícias'),
+        (ATPASTA, 'Pasta'),
         (ATINFORME, 'Informes'),
         (ATLINK, 'Links'),
         (ATIMAGEM, 'Imagens'),

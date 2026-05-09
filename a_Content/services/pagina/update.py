@@ -19,7 +19,10 @@ class UpdatePaginaService:
         content_id = data.get('id')
 
         if not content_id:
-            return 'error', 'ID não informado.'
+            return (
+                'error',
+                'ID não informado.'
+            )
 
         try:
 
@@ -39,10 +42,19 @@ class UpdatePaginaService:
             if updated_fields:
                 content.save(update_fields=updated_fields)
 
-            return 'success', f'Conteúdo "{content.titulo}" atualizado.'
+            return (
+                'success',
+                f'Conteúdo "{content.titulo}" atualizado.'
+            )
 
         except Content.DoesNotExist:
-            return 'error', 'Conteúdo não encontrado.'
+            return (
+                'error',
+                'Conteúdo não encontrado.'
+            )
 
         except Exception as e:
-            return 'error', str(e)
+            return (
+                'error',
+                str(e)
+            )

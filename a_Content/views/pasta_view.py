@@ -4,8 +4,9 @@ from django.urls import reverse
 from django.contrib import messages
 
 from a_Site.models import FactoryClassModel
+from a_Account.anotations import PermissionRoot
 from a_Content.models import Content
-from a_Content.forms.pagina_forms import FactoryATPageForm
+from a_Content.forms.pasta_forms import FactoryATPastaForm
 from a_Content.services.core.dispatcher import ServiceDispatcher
 
 from a_Acl.anotations import PermissionRequired
@@ -18,8 +19,8 @@ def clear_session(request):
         request.session.pop(key, None)
 
 
-@PermissionRequired('create', 'ATPagina')
-def create_pagina(request, url):
+@PermissionRequired('create', 'ATPasta')
+def create_pasta(request, url):
 
     Site = FactoryClassModel.get_class('site')
     ContentType = FactoryClassModel.get_class('tipo')
@@ -43,7 +44,7 @@ def create_pagina(request, url):
             site=site
         )
 
-    CreateForm = FactoryATPageForm.get_class('create')
+    CreateForm = FactoryATPastaForm.get_class('create')
 
     if request.method == 'POST':
 
@@ -58,9 +59,9 @@ def create_pagina(request, url):
             data['dono_id'] = user.id
             data['parent_id'] = parent_id
             data['site_id'] = site.id
-            data['tipo'] = ContentType.ATPAGINA
+            data['tipo'] = ContentType.ATPASTA
 
-            result, message, pagina = ServiceDispatcher.dispatch(
+            result, message, pasta = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data=data
@@ -73,7 +74,7 @@ def create_pagina(request, url):
             if result == 'success':
 
                 if parent:
-                    args.append(pagina.parent.path)
+                    args.append(parent.url)
 
                 messages.success(request, message)
 
@@ -101,8 +102,8 @@ def create_pagina(request, url):
     )
 
 
-@PermissionRequired('update', 'ATPagina')
-def update_pagina(request, url):
+@PermissionRequired('update', 'ATPasta')
+def update_pasta(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -123,7 +124,7 @@ def update_pagina(request, url):
 
     parent = content.parent
 
-    CreateForm = FactoryATPageForm.get_class('create')
+    CreateForm = FactoryATPastaForm.get_class('create')
 
     if request.method == 'POST':
 
@@ -147,7 +148,7 @@ def update_pagina(request, url):
             if result == 'success':
 
                 if parent:
-                    args.append(parent.path)
+                    args.append(parent.url)
 
                 messages.success(request, message)
 
@@ -164,7 +165,6 @@ def update_pagina(request, url):
             'titulo': content.titulo,
             'url': content.url,
             'descricao': content.descricao,
-            'corpo': content.corpo,
             'show_in_menu': content.show_in_menu,
             'excluir_nav': content.excluir_nav,
         })
@@ -183,8 +183,8 @@ def update_pagina(request, url):
     )
 
 
-@PermissionRequired('delete', 'ATPagina')
-def delete_pagina(request, url):
+@PermissionRequired('delete', 'ATPasta')
+def delete_pasta(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -210,7 +210,7 @@ def delete_pagina(request, url):
         args = [url]
         if result == 'success':
             if parent:
-                args.append(parent.path)
+                args.append(parent.url)
 
             messages.success(request, message)
         else:
@@ -227,8 +227,7 @@ def delete_pagina(request, url):
     return render(request, f'content/{type_.lower()}-{action}.html', context)
 
 
-# Falta definir a regra quanto a publicação
-def workflow_pagina(request, url):
+def workflow_pasta(request, url):
 
     Site = FactoryClassModel.get_class('site')
 

@@ -1,7 +1,7 @@
 from a_Content.models import FactoryClassModel
 
 
-class WorkflowPaginaService():
+class WorkflowPastaService():
     allowed_fields = [
         'workflow',
     ]

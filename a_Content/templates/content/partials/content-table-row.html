@@ -2,14 +2,14 @@
     <td class="px-8 py-6">
         <div class="flex items-center gap-4">
             <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-gray-800 text-slate-400 group-hover:bg-white dark:group-hover:bg-gray-700 group-hover:text-indigo-500 transition-all shadow-sm">
-                {% if content.tipo == 'ATFolder' or content.children.exists %}
+                {% if content.tipo == 'ATPasta' or content.children.exists %}
                     <i class="fas fa-folder text-xl"></i>
                 {% else %}
                     <i class="fas fa-file-lines text-xl"></i>
                 {% endif %}
             </div>
             <div>
-                {% if content.tipo == 'ATFolder' or content.children.exists %}
+                {% if content.tipo == 'ATPasta' or content.children.exists %}
                     <a href="{% url 'content:dashboard' site.url content.path %}" class="text-sm font-black text-slate-800 dark:text-white hover:text-indigo-600 transition-colors">
                         {{ content.titulo }}
                     </a>
@@ -38,7 +38,7 @@
     </td>
     <td class="px-8 py-6 text-right">
         <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-            <form action="{% url 'content:dashboard' site.url %}{% if parent %}{{parent.path}}{% endif %}" method="post">
+            <form action="{% url 'content:dashboard' site.url %}{% if parent %}@@{{parent.path}}/{% endif %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="content" value="{{content.tipo}}">
                 <input type="hidden" name="action" value="update">
@@ -48,7 +48,7 @@
                 </button>
             </form>
             <form
-                hx-post="{% url 'content:dashboard' site.url %}{% if parent %}{{ parent.path }}{% endif %}"
+                hx-post="{% url 'content:dashboard' site.url %}{% if parent %}@@{{ parent.path }}/{% endif %}"
                 hx-target="#modal-body-content"
                 hx-swap="innerHTML"
                 method="post"
@@ -66,7 +66,7 @@
                 </button>
             </form>
 
-            <form action="{% url 'content:dashboard' site.url %}{% if parent %}{{parent.path}}{% endif %}" method="post">
+            <form action="{% url 'content:dashboard' site.url %}{% if parent %}@@{{parent.path}}/{% endif %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="content" value="{{content.tipo}}">
                 <input type="hidden" name="action" value="delete">

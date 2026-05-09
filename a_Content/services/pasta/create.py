@@ -1,6 +1,6 @@
 from a_Content.models import FactoryClassModel
 
-class CreatePaginaService:
+class CreatePastaService:
     def execute(self, data):
         Content = FactoryClassModel.get_class('content')
         content = Content.objects.create(**data)

@@ -73,42 +73,87 @@ class Content(models.Model):
         if self.parent:
             return f"{self.parent.path}{self.url}/"
         return f"{self.url}/"
-    
+
 
     def update_descendants_path(self, old_path):
-        descendants = Content.objects.filter(path__startswith=old_path).exclude(pk=self.pk)
-
+        descendants = Content.objects.filter(
+            path__startswith=old_path,
+            site=self.site
+        )
         for item in descendants:
-            item.path = item.path.replace(old_path, self.path, 1)
-            item.save()
+            new_path = item.path.replace(
+                old_path,
+                self.path,
+                1
+            )
+
+            # Atualiza direto no banco
+            Content.objects.filter(pk=item.pk).update(
+                path=new_path
+            )
+    
+
+    def dynamic_content_rule(self):
+
+        rule = ContentRule.objects.filter(
+            content_type=self.tipo,
+            site=self.site,
+            active=True
+        ).first()
+
+        result = False
+
+
+        if rule:
+            self.parent = Content.objects.filter(path=rule.path, site=self.site).first()
+            self.path = f'{rule.path}{self.url}/'
+            result = True
+
+        return result
 
 
     def save(self, *args, **kwargs):
+
         if not self.url:
             self.url = slugify(self.titulo)
-        
-        # Garante a unicidade do slug
+
+        # unicidade
         base_slug = self.url
         slug = base_slug
         counter = 1
-        while Content.objects.filter(url=slug).exclude(pk=self.pk).exists():
-            slug = f'{base_slug}-{counter}'
-            counter += 1
-        self.url = slug
 
-        old_path = None
-        if self.pk:
-            old = Content.objects.get(pk=self.pk)
-            old_path = old.path
+        rule = None
+        if not self.id:
+            rule = self.dynamic_content_rule()
 
+        if not rule:
+            while Content.objects.filter(
+                url=slug,
+                site=self.site
+            ).exclude(pk=self.pk).exists():
+                
+                slug = f"{base_slug}-{counter}"
+                counter += 1
 
-        self.path = self.build_path()
-        
+            self.url = slug.lower()
+
+            # path antigo completo
+            old_path = None
+
+            if self.pk:
+                old = Content.objects.get(pk=self.pk)
+                old_path = old.path
+
+            # gera novo path
+            self.path = self.build_path()
+
+        # salva atual
         super().save(*args, **kwargs)
 
-        # Atualiza filhos se mudou estrutura
-        if old_path and old_path != self.path:
-            self.update_descendants_path(old_path)
+        if not rule:
+            # atualiza filhos
+            if old_path and old_path != self.path:
+                self.update_descendants_path(old_path)
 
     
     class Meta:
@@ -119,11 +164,48 @@ class Content(models.Model):
         unique_together = (('site', 'url'),)
 
 
+class ContentRule(models.Model):
+
+    ContentType = FactoryClassModel.get_class('tipo')
+
+    CHOICE_CONTENTTYPE = (
+        ('', ''),
+        (ContentType.ATPAGINA,  'Páginas'),
+        (ContentType.ATNOTICIA, 'Notícias'),
+        (ContentType.ATINFORME, 'Informes'),
+        (ContentType.ATLINK,    'Links'),
+        (ContentType.ATIMAGEM,  'Imagens'),
+        (ContentType.ATBANNER,  'Banners'),
+        (ContentType.ATEVENTO,  'Eventos'),
+        (ContentType.ATAGENDA,  'Agendas'),
+        (ContentType.ATARQUIVO, 'Arquivo'),
+        (ContentType.ATSERVICO, 'Serviço'),
+    )
+
+    site = models.ForeignKey('a_Site.Site', on_delete=models.CASCADE)
+    content_type = models.CharField(max_length=50, choices=CHOICE_CONTENTTYPE)
+    path = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+
+
+    class Meta:
+        ordering = ['content_type']
+        db_table = 'catalog_role'
+        verbose_name = 'Regra de conteúdo'
+        verbose_name_plural = 'Regras de conteúdos'
+        unique_together = (('site', 'content_type'),)
+
+
+    def __str__(self):
+        return f'{self.content_type} -> {self.path}'
+
+
 # Metodo fabrica
 class FactoryClassModel:
 
     _class = {
         'content': Content,
+        'role' : ContentRule
     }
 
     @classmethod

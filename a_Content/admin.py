@@ -1,3 +1,4 @@
 from django.contrib import admin
+from a_Content.models import ContentRule
 
-# Register your models here.
+admin.site.register(ContentRule)

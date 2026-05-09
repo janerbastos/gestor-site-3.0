@@ -16,6 +16,8 @@ def dashboard(request, url, path_url=None):
 
     # Busca o conteúdo base (raiz ou pasta específica)
     if path_url:
+        if not path_url.endswith('/'):
+            path_url += '/'
         parent = get_object_or_404(Content, path=path_url, site=site)
         # Gera os breadcrumbs percorrendo os pais
         curr = parent
