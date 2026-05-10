@@ -1,21 +1,24 @@
 from functools import wraps
+
 from django.core.exceptions import PermissionDenied
-from django.contrib import messages
 from django.contrib.auth.views import redirect_to_login
+from django.contrib import messages
 
 from a_Acl.services import ACLService
 
 
-from functools import wraps
-from django.core.exceptions import PermissionDenied
-
-
 class PermissionRequired:
 
-    def __init__(self, permission_slug, tipo):
+    def __init__(
+        self,
+        permission_slug,
+        tipo,
+        login_url='account:login'
+    ):
 
         self.permission_slug = permission_slug
         self.tipo = tipo
+        self.login_url = login_url
 
 
     def __call__(self, f):
@@ -25,16 +28,24 @@ class PermissionRequired:
 
             user = request.user
 
+            # login obrigatório
+            if not user.is_authenticated:
+
+                messages.warning(
+                    request,
+                    'Realize login para acessar o conteúdo.'
+                )
+
+                return redirect_to_login(
+                    next=request.get_full_path(),
+                    login_url=self.login_url
+                )
+
             # superusuário
             if user.is_superuser:
                 return f(request, *args, **kwargs)
 
             site = kwargs.get('url')
-
-            print('USER:', user)
-            print('SITE:', site)
-            print('TIPO:', self.tipo)
-            print('PERMISSION:', self.permission_slug)
 
             has_permission = ACLService.has_permission(
                 user,
@@ -43,8 +54,12 @@ class PermissionRequired:
                 self.permission_slug
             )
 
+            # sem permissão
             if not has_permission:
-                raise PermissionDenied()
+
+                raise PermissionDenied(
+                    'Usuário não possui autorização.'
+                )
 
             return f(request, *args, **kwargs)
 

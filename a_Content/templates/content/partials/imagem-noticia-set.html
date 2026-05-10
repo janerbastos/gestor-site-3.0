@@ -1,0 +1,4 @@
+{% if imagem.arquivo %}
+    <img src="{{ imagem.arquivo.url }}" alt="Imagem de Destaque Atual" class="aspect-video rounded-xl object-cover w-full max-w-md mx-auto mb-4">
+{% endif %}
+    <input type="hidden" name="imagem_destaque" value="{{imagem.arquivo.url}}">

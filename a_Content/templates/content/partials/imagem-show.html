@@ -1,0 +1,39 @@
+<div class="m-5 p-5">
+    <div class="flex justify-between items-center mb-8">
+        <form class="flex-grow mr-4"
+            hx-get="{% url 'content:imagem-manage-list' site.url %}"
+            hx-target="#modal-body-content"
+            hx-swap="innerHTML"
+            method="get"
+        >
+            <div class="relative flex items-center">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-slate-400"></i>
+                </div>
+                <input type="text" name="q" placeholder="Buscar imagens..." value="{{ request.GET.q }}" class="input-field pl-12 pr-4 py-2 rounded-full border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                <button type="submit" class="ml-3 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30">Buscar</button>
+            </div>
+        </form>
+        <button
+            hx-get="{% url 'content:imagem-manage-upload' site.url %}"
+            hx-target="#modal-body-content"
+            hx-swap="innerHTML"
+            class="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-full hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/30 flex items-center gap-2"
+        >
+            <i class="fas fa-upload"></i>
+            <span>Upload</span>
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {% for imagem in arquivos %}
+        {% include 'content/partials/imagem-card.html' %}
+    {% empty %}
+      <div class="col-span-full py-10 text-center text-slate-500 dark:text-gray-400">
+          <i class="fas fa-box-open text-5xl mb-3"></i>
+          <p class="text-lg font-semibold">Nenhuma mídia encontrada.</p>
+          <p class="text-sm">Tente ajustar sua busca ou faça upload de novas imagens.</p>
+      </div>
+    {% endfor %}
+    </div>
+</div>

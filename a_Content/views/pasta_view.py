@@ -227,6 +227,7 @@ def delete_pasta(request, url):
     return render(request, f'content/{type_.lower()}-{action}.html', context)
 
 
+@PermissionRequired('workflow', 'ATPasta')
 def workflow_pasta(request, url):
 
     Site = FactoryClassModel.get_class('site')

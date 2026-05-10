@@ -6,6 +6,7 @@ from a_Account.views import (
 )
 
 app_name = 'account'
+handler403 = 'a_Acl.views.permission_view.access_denied'
 
 urlpatterns = [
     path('login/', login, name='login'),

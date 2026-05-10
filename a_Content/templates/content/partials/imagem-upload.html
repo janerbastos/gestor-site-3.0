@@ -1,0 +1,58 @@
+<div class="m-5 p-5">
+    <form enctype="multipart/form-data" class="space-y-4"
+            hx-post="{% url 'content:imagem-manage-upload' site.url %}"
+            hx-target="#modal-body-content"
+            hx-swap="innerHTML"
+            method="post"
+    >
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.titulo.id_for_label }}" class="form-label ml-1">
+                Título para imagem
+            </label>
+
+            {{ form.titulo }}
+
+            {% if form.titulo.errors %}
+                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                    {{ form.titulo.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.slug.id_for_label }}" class="form-label ml-1">
+                Slug para imagem
+            </label>
+
+            {{ form.slug }}
+
+            {% if form.slug.errors %}
+                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                    {{ form.slug.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.arquivo.id_for_label }}" class="form-label ml-1">
+                Arquivo para imagem
+            </label>
+
+            {{ form.arquivo }}
+
+            {% if form.arquivo.errors %}
+                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                    {{ form.arquivo.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <button 
+            type="submit"
+            class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-md text-sm font-semibold transition">
+            SALVAR
+        </button>
+    </form>
+</div>

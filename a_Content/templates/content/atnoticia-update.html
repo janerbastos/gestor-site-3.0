@@ -1,35 +1,56 @@
 {% extends 'comum/Base.html' %}
 {% load widget_tweaks static %}
 
-{% block titulo %}Nova Página | {{ site.titulo }}{% endblock %}
+{% block titulo %}Editar Notícia | {{ site.titulo }}{% endblock %}
 
 {% block body_content %}
-<div class="p-6 animate-fade-in-up">
+<div class="p-6 animate-fade-in-up" x-data="{ modalOpen: false }">
     <!-- Header Section -->
     <div class="mb-8 max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between items-center gap-6">
         <div>
             <div class="flex items-center gap-3 mb-2">
                 <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-                    <i class="fas fa-file-circle-plus text-lg"></i>
+                    <i class="fas fa-edit text-lg"></i>
                 </div>
-                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Nova Página</h1>
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Editar Notícia</h1>
             </div>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Criando novo conteúdo para <strong>{{ site.titulo }}</strong>.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Atualizando o conteúdo da notícia <strong>{{ content.titulo }}</strong>.</p>
         </div>
+        
 
-        <div>
-            <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+        <div class="flex items-center gap-2">
+    
+            <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}"
+            class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 dark:hover:bg-gray-700 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+                
                 <i class="fas fa-times text-red-500"></i>
                 Cancelar
             </a>
+
+            <form 
+                hx-get="{% url 'content:imagem-manage-list' site.url %}"
+                hx-target="#modal-body-content"
+                hx-swap="innerHTML"
+                method="get">
+                
+                <button 
+                    type="submit"
+                    @click="modalOpen = true"
+                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+                    
+                    <i class="fas fa-image"></i>
+                    Mídia
+                </button>
+            </form>
+
         </div>
+
     </div>
 
     <!-- Form Area -->
     <div class="max-w-4xl mx-auto">
-        <form method="post" class="space-y-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
-
             {% if form.non_field_errors %}
             <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
                 {% for error in form.non_field_errors %}
@@ -49,7 +70,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Titulo -->
                         <div class="form-group md:col-span-2">
-                            <label for="{{ form.titulo.id_for_label }}" class="form-label ml-1">Título da Página</label>
+                            <label for="{{ form.titulo.id_for_label }}" class="form-label ml-1">Título da Notícia</label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <i class="fas fa-heading text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
@@ -70,7 +91,7 @@
                                 </div>
                                 {% render_field form.url class="input-field font-mono" %}
                             </div>
-                            <p class="text-[9px] text-slate-400 font-medium ml-1 mt-1 uppercase tracking-tight italic">Apenas letras, números e hífens.</p>
+                            <p class="text-[9px] text-slate-400 font-medium ml-1 mt-1 uppercase tracking-tight italic">Altere apenas se necessário.</p>
                             {% if form.url.errors %}
                                 <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.url.errors.0 }}</p>
                             {% endif %}
@@ -94,12 +115,58 @@
 
                 <hr class="border-slate-50 dark:border-gray-800">
 
+                <!-- Section: Mídia -->
+                <div class="space-y-6">
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">2. Mídia e Destaque</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group md:col-span-2">
+                            <div id="imagem-destaque">
+                                {% if content.data.imagem_destaque %}
+                                    <img src="{{ content.data.imagem_destaque }}" alt="Imagem de Destaque Atual" class="aspect-video rounded-xl object-cover w-full max-w-md mx-auto mb-4">
+                                {% endif %}
+                                    <input type="hidden" name="imagem_destaque" value="{{content.data.imagem_destaque}}">
+                            </div>
+                            
+                        </div>
+
+                        <!-- Legenda -->
+                        <div class="form-group md:col-span-2">
+                            <label for="{{ form.legenda_imagem.id_for_label }}" class="form-label ml-1">Legenda da Imagem</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-quote-left text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                                </div>
+                                {# {% render_field form.legenda_imagem class="input-field" %} #}
+                                {{ form.legenda_imagem }}
+
+                            </div>
+                            {% if form.legenda_imagem.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.legenda_imagem.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Show Imagem Checkbox -->
+                        <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 md:col-span-2">
+                            <div class="flex items-center h-6">
+                                {% render_field form.show_imagem class="checkbox-field" %}
+                            </div>
+                            <div class="text-sm">
+                                <label for="{{ form.show_imagem.id_for_label }}" class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">Exibir imagem no corpo da notícia</label>
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Se marcado, a imagem de destaque será exibida antes do conteúdo principal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
                 <!-- Section: Conteúdo -->
                 <div class="space-y-6">
-                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">2. Conteúdo da Página</h3>
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">3. Conteúdo da Notícia</h3>
                     
                     <div class="form-group">
-                        <label for="{{ form.descricao.id_for_label }}" class="form-label ml-1">Descrição Curta (Sumário)</label>
+                        <label for="{{ form.descricao.id_for_label }}" class="form-label ml-1">Descrição Curta (Resumo)</label>
                         {% render_field form.descricao class="textarea-field h-24" %}
                         {% if form.descricao.errors %}
                             <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.descricao.errors.0 }}</p>
@@ -107,7 +174,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="{{ form.corpo.id_for_label }}" class="form-label ml-1">Corpo da Página</label>
+                        <label for="{{ form.corpo.id_for_label }}" class="form-label ml-1">Texto Completo</label>
                         {% render_field form.corpo class="textarea-field min-h-[400px]" %}
                         {% if form.corpo.errors %}
                             <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.corpo.errors.0 }}</p>
@@ -119,7 +186,7 @@
 
                 <!-- Section: Opções -->
                 <div class="space-y-6">
-                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">3. Configurações de Navegação</h3>
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">4. Configurações de Navegação</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800">
@@ -128,7 +195,7 @@
                             </div>
                             <div class="text-sm">
                                 <label for="{{ form.show_in_menu.id_for_label }}" class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">Mostrar no Menu</label>
-                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Marque para que esta página apareça automaticamente no menu principal.</p>
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Marque para que esta notícia apareça no menu lateral/principal.</p>
                             </div>
                         </div>
 
@@ -138,7 +205,7 @@
                             </div>
                             <div class="text-sm">
                                 <label for="{{ form.excluir_nav.id_for_label }}" class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">Excluir da Navegação</label>
-                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Oculta a página da navegação interna (breadcrumbs e listagens).</p>
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">Oculta a notícia de trilhas de navegação (breadcrumbs).</p>
                             </div>
                         </div>
                     </div>
@@ -148,7 +215,7 @@
                 <div class="pt-6 flex flex-col sm:flex-row gap-4 border-t border-slate-50 dark:border-gray-800">
                     <button type="submit" class="btn-primary flex-1 group">
                         <i class="fas fa-save mr-2 group-hover:shake"></i>
-                        SALVAR PÁGINA
+                        SALVAR ALTERAÇÕES
                     </button>
                     <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="btn-secondary sm:px-12 text-center uppercase tracking-widest">
                         VOLTAR
@@ -163,12 +230,13 @@
                 <i class="fas fa-lightbulb"></i>
             </div>
             <div>
-                <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Dica de SEO</h4>
+                <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Dica de Edição</h4>
                 <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">
-                    Utilize palavras-chave importantes no <strong>Título</strong> e no <strong>Slug</strong>. Isso ajuda motores de busca como o Google a encontrar seu conteúdo mais facilmente.
+                    Ao atualizar o <strong>Slug</strong>, links compartilhados anteriormente podem parar de funcionar. Mantenha o mesmo slug para preservar o SEO, a menos que seja estritamente necessário mudar.
                 </p>
             </div>
         </div>
     </div>
+    {% include 'content/partials/modal-imagem-manage.html' %}
 </div>
 {% endblock %}

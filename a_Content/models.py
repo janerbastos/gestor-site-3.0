@@ -3,7 +3,10 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.utils.text import slugify
 
+import os
+
 from a_Site.models import FactoryClassModel
+from a_Site.services.imagem_service import ImagemService
 
 
 
@@ -35,6 +38,7 @@ class Content(models.Model):
     dono         = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
     path         = models.CharField(max_length=255, db_index=True)
     parent       = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    tag          = models.CharField(max_length=100, null=True, blank=True)
     data         = models.JSONField(null=True, blank=True)
 
 
@@ -200,11 +204,226 @@ class ContentRule(models.Model):
         return f'{self.content_type} -> {self.path}'
 
 
+class ArquivoMidia(models.Model):
+    # =========================================================
+    # Tipos gerais de mídia
+    # =========================================================
+
+    IMAGEM = 'imagem'
+    DOCUMENTO = 'documento'
+    VIDEO = 'video'
+    AUDIO = 'audio'
+    OUTRO = 'outro'
+
+    CHOICES_TIPO = (
+        (IMAGEM, 'Imagem'),
+        (DOCUMENTO, 'Documento'),
+        (VIDEO, 'Vídeo'),
+        (AUDIO, 'Áudio'),
+        (OUTRO, 'Outro'),
+    )
+
+    # =========================================================
+    # Relacionamentos
+    # =========================================================
+
+    site = models.ForeignKey(
+        'a_Site.Site',
+        on_delete=models.CASCADE,
+        related_name='arquivos'
+    )
+    dono = models.ForeignKey(
+        'a_Account.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    # =========================================================
+    # Arquivo físico
+    # =========================================================
+
+    arquivo = models.FileField(
+        upload_to=ImagemService.content_file_generico,
+        max_length=500
+    )
+
+    # =========================================================
+    # Metadados
+    # =========================================================
+
+    titulo = models.CharField(
+        max_length=255,
+        help_text='Nome amigável do arquivo'
+    )
+
+    slug = models.SlugField(
+        max_length=255,
+        blank=True
+    )
+
+    mimetype = models.CharField(
+        max_length=100,
+        editable=False,
+        blank=True
+    )
+
+    extensao = models.CharField(
+        max_length=10,
+        editable=False,
+        blank=True
+    )
+
+    tamanho = models.PositiveIntegerField(
+        editable=False,
+        default=0,
+        help_text='Tamanho em bytes'
+    )
+
+    tipo_geral = models.CharField(
+        max_length=20,
+        choices=CHOICES_TIPO,
+        default=OUTRO
+    )
+
+    # =========================================================
+    # Auditoria
+    # =========================================================
+
+    create_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    update_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    # =========================================================
+    # Meta
+    # =========================================================
+
+    class Meta:
+        db_table = 'catalog_midia'
+        verbose_name = 'Arquivo de Mídia'
+        verbose_name_plural = 'Arquivos de Mídia'
+        ordering = ['-create_at']
+
+    # =========================================================
+    # Representação
+    # =========================================================
+
+    def __str__(self):
+
+        return self.titulo
+
+    # =========================================================
+    # Save
+    # =========================================================
+
+    def save(self, *args, **kwargs):
+        # slug automático
+
+        if not self.slug:
+            self.slug = slugify(self.titulo)
+
+        # processamento arquivo
+        if self.arquivo:
+            self.extensao = (
+                os.path.splitext(
+                    self.arquivo.name
+                )[1]
+                .lower()
+                .replace('.', '')
+            )
+
+            self.tamanho = self.arquivo.size
+            self.tipo_geral = self.detect_tipo_geral()
+
+        super().save(*args, **kwargs)
+
+    # =========================================================
+    # Detecta tipo da mídia
+    # =========================================================
+
+    def detect_tipo_geral(self):
+
+        if self.extensao in [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+            'svg'
+        ]:
+
+            return self.IMAGEM
+
+        elif self.extensao in [
+            'pdf',
+            'doc',
+            'docx',
+            'xls',
+            'xlsx',
+            'ppt',
+            'pptx',
+            'txt'
+        ]:
+
+            return self.DOCUMENTO
+
+        elif self.extensao in [
+            'mp4',
+            'avi',
+            'mov',
+            'mkv',
+            'webm'
+        ]:
+
+            return self.VIDEO
+
+        elif self.extensao in [
+            'mp3',
+            'wav',
+            'ogg'
+        ]:
+
+            return self.AUDIO
+
+        return self.OUTRO
+
+    # =========================================================
+    # JSON Reference
+    # =========================================================
+
+    def to_json_reference(self):
+
+        """
+        Estrutura pronta para persistência
+        em JSONField.
+        """
+
+        return {
+
+            'id': self.id,
+
+            'url': self.arquivo.url,
+
+            'titulo': self.titulo,
+
+            'tipo': self.tipo_geral,
+
+            'ext': self.extensao,
+
+            'size': self.tamanho
+        }
+
+
 # Metodo fabrica
 class FactoryClassModel:
 
     _class = {
         'content': Content,
+        'midia' : ArquivoMidia,
         'role' : ContentRule
     }
 

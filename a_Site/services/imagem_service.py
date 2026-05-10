@@ -27,3 +27,20 @@ class ImagemService:
         filename = str(uuid.uuid4())
         filename = filename + '.' + ext
         return os.path.join('file/site/%s/imagens/configure' % (instance.url), filename)
+    
+    @classmethod
+    def content_file_generico(cls, instance, filename):
+
+        ext = filename.split('.')[-1].lower()
+        filename = f'{uuid.uuid4()}.{ext}'
+        pasta = ('documentos'if instance.tipo_geral == 'documento' else 'imagens')
+
+        # estrutura final
+        return os.path.join(
+            'file',
+            'site',
+            instance.site.url,
+            pasta,
+            str(date.today().year),
+            filename
+        )

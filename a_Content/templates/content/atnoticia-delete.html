@@ -1,0 +1,65 @@
+{% extends 'comum/Base.html' %}
+
+{% load static %}
+
+{% block body_content %}
+<div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <!-- Brand Identity -->
+        <div class="flex flex-col items-center mb-10">
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-red-500/10 mb-6 border border-slate-100 dark:border-gray-700 transition-transform hover:scale-105 duration-300">
+                <i class="fas fa-newspaper text-4xl text-red-600"></i>
+            </div>
+            <h2 class="text-3xl font-black text-center text-slate-900 dark:text-white tracking-tight uppercase">Excluir Conteúdo</h2>
+            <p class="mt-2 text-center text-sm text-slate-500 dark:text-gray-400 font-medium">Esta ação não pode ser desfeita</p>
+        </div>
+
+        <!-- Confirmation Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-[2rem] shadow-2xl shadow-slate-200/60 dark:shadow-none border border-slate-100 dark:border-gray-700 p-8 sm:p-10">
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 dark:bg-red-900/20 mb-4">
+                    <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Você tem certeza?</h3>
+                <p class="text-sm text-slate-500 dark:text-gray-400">
+                    Você está prestes a excluir o conteudo <br>
+                    <span class="font-black text-slate-900 dark:text-white underline decoration-red-500 decoration-2">{{ content.titulo }}</span><br>
+                    <span class="text-xs">({{ content.url }})</span>
+                </p>
+            </div>
+
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+
+                <input type="hidden" name="content_id">
+                
+                <button type="submit" class="btn-danger group w-full">
+                    <i class="fas fa-trash-alt mr-2 group-hover:shake transition-transform"></i>
+                    EXCLUIR PERMANENTEMENTE
+                </button>
+                
+                <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}" class="btn-secondary w-full">
+                    CANCELAR E VOLTAR
+                </a>
+            </form>
+
+            <div class="mt-8 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl">
+                <p class="text-[10px] font-black text-amber-800 dark:text-amber-500 uppercase tracking-widest flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> Aviso Importante
+                </p>
+                <p class="mt-1 text-[11px] text-amber-700 dark:text-amber-400/80 leading-relaxed">
+                    Ao excluir este conteúdo, ele perderá recuperar.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="mt-12 flex flex-col items-center space-y-4">
+            <p class="text-center text-[10px] font-black text-slate-400 dark:text-gray-600 uppercase tracking-[0.4em]">
+                &copy; 2026 UFOPA &bull; CTIC
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

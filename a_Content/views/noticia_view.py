@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from a_Site.models import FactoryClassModel
 from a_Content.models import Content
-from a_Content.forms.pagina_forms import FactoryATPageForm
+from a_Content.forms.noticia_forms import FactoryATNoticiaForm
 from a_Content.services.core.dispatcher import ServiceDispatcher
 
 from a_Acl.anotations import PermissionRequired
@@ -18,8 +18,8 @@ def clear_session(request):
         request.session.pop(key, None)
 
 
-@PermissionRequired('create', 'ATPagina')
-def create_pagina(request, url):
+@PermissionRequired('create', 'ATNoticia')
+def create_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     ContentType = FactoryClassModel.get_class('tipo')
@@ -43,11 +43,11 @@ def create_pagina(request, url):
             site=site
         )
 
-    CreateForm = FactoryATPageForm.get_class('create')
+    CreateForm = FactoryATNoticiaForm.get_class('create')
 
     if request.method == 'POST':
 
-        form = CreateForm(request.POST)
+        form = CreateForm(request.POST, request.FILES)
 
         if form.is_valid():
 
@@ -58,7 +58,8 @@ def create_pagina(request, url):
             data['dono_id'] = user.id
             data['parent_id'] = parent_id
             data['site_id'] = site.id
-            data['tipo'] = ContentType.ATPAGINA
+            data['tipo'] = ContentType.ATNOTICIA
+            data['imagem_destaque'] = request.POST.get('imagem_destaque')
 
             result, message, pagina = ServiceDispatcher.dispatch(
                 type_,
@@ -101,8 +102,8 @@ def create_pagina(request, url):
     )
 
 
-@PermissionRequired('update', 'ATPagina')
-def update_pagina(request, url):
+@PermissionRequired('update', 'ATNoticia')
+def update_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -123,16 +124,17 @@ def update_pagina(request, url):
 
     parent = content.parent
 
-    CreateForm = FactoryATPageForm.get_class('create')
+    CreateForm = FactoryATNoticiaForm.get_class('create')
 
     if request.method == 'POST':
 
-        form = CreateForm(request.POST)
+        form = CreateForm(request.POST, request.FILES)
 
         if form.is_valid():
 
             data = form.cleaned_data
             data['id'] = content.id
+            data['imagem_destaque'] = request.POST.get('imagem_destaque')
 
             result, message = ServiceDispatcher.dispatch(
                 type_,
@@ -165,9 +167,12 @@ def update_pagina(request, url):
             'url': content.url,
             'descricao': content.descricao,
             'corpo': content.corpo,
-            'tag' : content.tag,
+            'tag'  : content.tag,
             'show_in_menu': content.show_in_menu,
             'excluir_nav': content.excluir_nav,
+            # 'imagem_destaque' : content.data['imagem_destaque'],
+            'legenda_imagem' : content.data['legenda_imagem'],
+            'show_imagem' : content.data['show_imagem'],
         })
 
     context = {
@@ -184,8 +189,8 @@ def update_pagina(request, url):
     )
 
 
-@PermissionRequired('delete', 'ATPagina')
-def delete_pagina(request, url):
+@PermissionRequired('delete', 'ATNoticia')
+def delete_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -228,17 +233,15 @@ def delete_pagina(request, url):
     return render(request, f'content/{type_.lower()}-{action}.html', context)
 
 
-@PermissionRequired('workflow', 'ATPagina')
-def workflow_pagina(request, url):
+@PermissionRequired('workflow', 'ATNoticia')
+def workflow_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
-
     site = get_object_or_404(Site, url=url)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
     content_id = request.session.get('content_id')
-
 
     if not all([type_, action, content_id]):
         return HttpResponse('Sessão inválida.', status=400)
@@ -252,11 +255,8 @@ def workflow_pagina(request, url):
     parent = content.parent
 
     if request.method == 'POST':
-
         workflow = request.POST.get('workflow')
-
         if workflow:
-
             result, message = ServiceDispatcher.dispatch(
                 type_,
                 action,

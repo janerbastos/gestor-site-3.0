@@ -1,0 +1,14 @@
+<div class="card-base p-4 flex flex-col items-center text-center"
+    hx-get="{% url 'content:imagem-manage-set' site.url imagem.id %}"
+    hx-target="#imagem-destaque" 
+    hx-swap="innerHTML"
+    @click="modalOpen=false">
+
+    {% if imagem.arquivo %}
+        <img src="{{ imagem.arquivo.url }}" alt="{{ imagem.titulo }}" class="w-full h-32 object-cover rounded-lg mb-3">
+    {% endif %}
+    <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-1">{{ imagem.titulo }}</h4>
+    {% if imagem.legenda %}
+        <p class="text-xs text-slate-500 dark:text-slate-400">{{ imagem.legenda }}</p>
+    {% endif %}
+</div>

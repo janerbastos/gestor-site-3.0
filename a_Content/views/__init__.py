@@ -1,8 +1,13 @@
 from a_Content.views.manage_views import dashboard
 from a_Content.views.page_view import create_pagina, update_pagina, delete_pagina, workflow_pagina
 from a_Content.views.pasta_view import create_pasta, update_pasta, delete_pasta, workflow_pasta
+from a_Content.views.noticia_view import create_noticia, update_noticia, delete_noticia, workflow_noticia
+from a_Content.views.imagem_manage_view import imagem_manage_list, imagem_manage_upload, imagem_manage_set
 
 __ALL__ = [
-    'dashboard', 'create_pagina', 'update_pagina', 'delete_pagina', 'workflow_pagina'
-    'create_pasta', 'update_pasta', 'delete_pasta', 'workflow_pasta'
+    'dashboard',
+    'imagem_manage_list', 'imagem_manage_upload', 'imagem_manage_set',
+    'create_pagina', 'update_pagina', 'delete_pagina', 'workflow_pagina'
+    'create_pasta', 'update_pasta', 'delete_pasta', 'workflow_pasta',
+    'create_noticia', 'update_noticia', 'delete_noticia', 'workflow_noticia',
     ]
