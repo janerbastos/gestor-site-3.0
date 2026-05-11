@@ -23,3 +23,4 @@ SQLAlchemy==2.0.36
 django-cotton==2.6.2
 django-cache-url==3.4.5
 bleach==6.2.0
+google-analytics-data>=0.18.0

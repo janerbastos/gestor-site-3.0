@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'a_Acl',
     'a_Account',
     'a_Content',
+    'a_Log.apps.ALogConfig',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'a_Log.middleware.PortalSecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'gestorsite.urls'
