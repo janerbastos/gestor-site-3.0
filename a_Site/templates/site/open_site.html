@@ -1,5 +1,5 @@
 {% extends 'comum/Base.html' %}
-{% load static %}
+{% load storage_tags static %}
 
 {% block titulo %}Gerenciar: {{ site.titulo }}{% endblock %}
 
@@ -104,16 +104,8 @@
             </div>
 
             <!-- Stats Mini Card -->
-            <div class="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl p-6 text-white shadow-xl shadow-indigo-500/20">
-                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-4">Armazenamento</p>
-                <div class="flex items-end justify-between mb-2">
-                    <span class="text-2xl font-black">42%</span>
-                    <span class="text-[10px] font-bold opacity-80 uppercase">8.4GB / 20GB</span>
-                </div>
-                <div class="h-2 bg-white/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-white rounded-full w-[42%] shadow-sm"></div>
-                </div>
-            </div>
+            {% media_storage_card %}
+            
         </aside>
 
         <!-- Content Area -->

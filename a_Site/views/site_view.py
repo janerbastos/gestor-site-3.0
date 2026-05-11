@@ -8,6 +8,7 @@ from a_Site.forms import CreateSiteForm
 from a_Account.anotations import PermissionRoot
 
 
+
 @PermissionRoot()
 def dashboard(request):
     Site = FactoryClassModel.get_class('site')
@@ -34,7 +35,7 @@ def dashboard(request):
 
     context = {
         'sites' : sites,
-        'breadcrumbs': []
+        'breadcrumbs': [],
     }
 
     return render(request, 'site/dashboard.html', context)

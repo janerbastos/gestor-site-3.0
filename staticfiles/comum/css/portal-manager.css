@@ -643,6 +643,9 @@
   .w-\[42\%\] {
     width: 42%;
   }
+  .w-\[storage\.media_percent_used\%\] {
+    width: storage.media percent used%;
+  }
   .w-auto {
     width: auto;
   }
