@@ -37,4 +37,9 @@ SERVICES = {
     "ATServico.update"  : "a_Content.services.servico.update.UpdateServicoService",
     "ATServico.delete"  : "a_Content.services.servico.delete.DeleteServicoService",
     "ATServico.workflow": "a_Content.services.servico.workflow.WorkflowServicoService",
+
+    "ATLink.create"  : "a_Content.services.link.create.CreateLinkService",
+    "ATLink.update"  : "a_Content.services.link.update.UpdateLinkService",
+    "ATLink.delete"  : "a_Content.services.link.delete.DeleteLinkService",
+    "ATLink.workflow": "a_Content.services.link.workflow.WorkflowLinkService",
 }

@@ -8,7 +8,8 @@ from a_Content.views import (
     create_informe, update_informe, delete_informe, workflow_informe,
     create_evento, update_evento, delete_evento, workflow_evento,
     create_agenda, update_agenda, delete_agenda, workflow_agenda,
-    create_servico, update_servico, delete_servico, workflow_servico
+    create_servico, update_servico, delete_servico, workflow_servico,
+    create_link, update_link, delete_link, workflow_link
 )
 
 app_name = 'content'
@@ -58,6 +59,12 @@ urlpatterns = [
     path('site/<slug:url>/update-servico/', update_servico, name='update-atservico'),
     path('site/<slug:url>/delete-servico/', delete_servico, name='delete-atservico'),
     path('site/<slug:url>/workflow-servico/', workflow_servico, name='workflow-atservico'),
+
+    # Link
+    path('site/<slug:url>/create-link/', create_link, name='create-atlink'),
+    path('site/<slug:url>/update-link/', update_link, name='update-atlink'),
+    path('site/<slug:url>/delete-link/', delete_link, name='delete-atlink'),
+    path('site/<slug:url>/workflow-link/', workflow_link, name='workflow-atlink'),
 
     # Imagem Manager
     path('site/<slug:url>/imagem-manager-list/', imagem_manage_list, name='imagem-manage-list'),
