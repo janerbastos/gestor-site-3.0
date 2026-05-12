@@ -17,4 +17,19 @@ SERVICES = {
     "ATNoticia.update"  : "a_Content.services.noticia.update.UpdateNoticiaService",
     "ATNoticia.delete"  : "a_Content.services.noticia.delete.DeleteNoticiaService",
     "ATNoticia.workflow": "a_Content.services.noticia.workflow.WorkflowNoticiaService",
+
+    "ATInforme.create"  : "a_Content.services.informe.create.CreateInformeService",
+    "ATInforme.update"  : "a_Content.services.informe.update.UpdateInformeService",
+    "ATInforme.delete"  : "a_Content.services.informe.delete.DeleteInformeService",
+    "ATInforme.workflow": "a_Content.services.informe.workflow.WorkflowInformeService",
+
+    "ATEvento.create"  : "a_Content.services.evento.create.CreateEventoService",
+    "ATEvento.update"  : "a_Content.services.evento.update.UpdateEventoService",
+    "ATEvento.delete"  : "a_Content.services.evento.delete.DeleteEventoService",
+    "ATEvento.workflow": "a_Content.services.evento.workflow.WorkflowEventoService",
+
+    "ATAgenda.create"  : "a_Content.services.agenda.create.CreateAgendaService",
+    "ATAgenda.update"  : "a_Content.services.agenda.update.UpdateAgendaService",
+    "ATAgenda.delete"  : "a_Content.services.agenda.delete.DeleteAgendaService",
+    "ATAgenda.workflow": "a_Content.services.agenda.workflow.WorkflowAgendaService",
 }

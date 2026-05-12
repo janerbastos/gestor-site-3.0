@@ -1,6 +1,6 @@
 from a_Content.models import FactoryClassModel
 
-class CreateNoticiaService:
+class CreateInformeService:
     # Campos que são colunas reais na tabela catalog_content
     common_fields = [
         'url',
@@ -36,6 +36,7 @@ class CreateNoticiaService:
 
         # 4. Criação do Conteúdo
         try:
+            print(content_params)
             content = Content.objects.create(**content_params)
             return (
                 'success',

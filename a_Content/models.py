@@ -170,6 +170,21 @@ class Content(models.Model):
 
 class ContentRule(models.Model):
 
+    """
+    Entidade responsável pelas regras de organização e
+    posicionamento de conteúdos no CMS.
+
+    Padroniza o armazenamento e a associação de diferentes
+    tipos de conteúdo em determinadas pastas, seções ou
+    estruturas de navegação, evitando distribuição aleatória
+    dos registros no sistema.
+
+    Esta entidade permite definir critérios de organização,
+    agrupamento e exibição dos conteúdos, contribuindo para
+    uma estrutura mais consistente, escalável e gerenciável
+    no portal.
+    """
+
     ContentType = FactoryClassModel.get_class('tipo')
 
     CHOICE_CONTENTTYPE = (
@@ -418,13 +433,70 @@ class ArquivoMidia(models.Model):
         }
 
 
+
+class Event(models.Model):
+    """
+    Entidade especializada responsável por representar atributos
+    temporais e estruturais de conteúdos do tipo EVENTO.
+
+    Esta classe atua como uma extensão do modelo Content,
+    permitindo consultas performáticas relacionadas a datas,
+    calendário, agenda e filtros temporais, sem depender
+    de consultas sobre campos JsonField.
+
+    O modelo Content permanece como núcleo genérico do CMS,
+    responsável pela apresentação e gerenciamento comum dos
+    conteúdos, enquanto Event fornece estrutura indexável
+    para operações específicas de eventos.
+
+    Responsabilidades:
+        - armazenar datas de início e término;
+        - permitir indexação temporal;
+        - facilitar consultas de calendário;
+        - suportar integrações com agendas e APIs;
+        - manter desacoplamento entre conteúdo genérico
+          e lógica temporal.
+
+    Exemplo:
+        Content(tipo='ATEvento') ---> Event(content=...)
+
+    Benefícios:
+        - consultas rápidas por data;
+        - melhor performance em calendários;
+        - suporte a indexação no banco;
+        - flexibilidade para atributos extras via JSON;
+        - arquitetura escalável para CMS híbrido.
+
+    Observação:
+        Informações dinâmicas ou complementares do evento
+        podem continuar armazenadas no campo JsonField
+        do modelo Content.
+    """
+
+    content = models.OneToOneField('Content',
+        on_delete=models.CASCADE,
+        related_name='evento'
+    )
+    site = models.ForeignKey('a_Site.Site', on_delete=models.CASCADE, related_name='eventos')
+    inicio = models.DateTimeField(db_index=True)
+    termino = models.DateTimeField(null=True, blank=True)
+    tipo = models.CharField(max_length=20, default='ATEvento')
+
+    class Meta:
+        ordering = ['-inicio']
+        db_table = 'catalog_event'
+        verbose_name = 'Agenda e Evento'
+        verbose_name_plural = 'Agendas e Eventos'
+
+
 # Metodo fabrica
 class FactoryClassModel:
 
     _class = {
         'content': Content,
         'midia' : ArquivoMidia,
-        'role' : ContentRule
+        'role' : ContentRule,
+        'evento' : Event
     }
 
     @classmethod

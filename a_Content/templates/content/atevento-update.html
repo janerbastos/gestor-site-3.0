@@ -1,0 +1,305 @@
+{% extends 'comum/Base.html' %}
+{% load widget_tweaks static %}
+
+{% block titulo %}Novo Evento | {{ site.titulo }}{% endblock %}
+
+{% block body_content %}
+<div class="p-6 animate-fade-in-up">
+
+    <!-- Header -->
+    <div class="mb-8 max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between items-center gap-6">
+        
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+                    <i class="fas fa-calendar-plus text-lg"></i>
+                </div>
+
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    Editar Evento
+                </h1>
+            </div>
+
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Atualizando o conteúdo do evento <strong>{{ content.titulo }}</strong>.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}"
+               class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+
+                <i class="fas fa-times text-red-500"></i>
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="max-w-5xl mx-auto">
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
+                {% for error in form.non_field_errors %}
+                    <p class="text-sm text-red-600 dark:text-red-400 font-bold flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="card-base p-8 sm:p-10 space-y-10">
+
+                <!-- Informações Básicas -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        1. Informações Básicas
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Titulo -->
+                        <div class="md:col-span-2">
+                            <label class="form-label ml-1">
+                                Título do Evento
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-heading text-slate-300 group-focus-within:text-indigo-500"></i>
+                                </div>
+
+                                {% render_field form.titulo class="input-field" %}
+                            </div>
+                        </div>
+
+                        <!-- URL -->
+                        <div>
+                            <label class="form-label ml-1">
+                                URL (Slug)
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-link text-slate-300 group-focus-within:text-indigo-500"></i>
+                                </div>
+
+                                {% render_field form.url class="input-field font-mono" %}
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div>
+                            <label class="form-label ml-1">
+                                Tags
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-tags text-slate-300 group-focus-within:text-indigo-500"></i>
+                                </div>
+
+                                {% render_field form.tag class="input-field" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Datas -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        2. Agenda do Evento
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Inicio -->
+                        <div>
+                            <label class="form-label ml-1">
+                                Início
+                            </label>
+                            {% render_field form.inicio class="input-field" %}
+                        </div>
+
+                        <!-- Termino -->
+                        <div>
+                            <label class="form-label ml-1">
+                                Término
+                            </label>
+                            {% render_field form.termino class="input-field" %}
+                        </div>
+
+                        <!-- Local -->
+                        <div class="md:col-span-2">
+                            <label class="form-label ml-1">
+                                Local do Evento
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-location-dot text-slate-300 group-focus-within:text-indigo-500"></i>
+                                </div>
+
+                                {% render_field form.local class="input-field" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Conteúdo -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        3. Conteúdo do Evento
+                    </h3>
+
+                    <div>
+                        <label class="form-label ml-1">
+                            Descrição Curta
+                        </label>
+
+                        {% render_field form.descricao class="textarea-field h-24" %}
+                    </div>
+
+                    <div>
+                        <label class="form-label ml-1">
+                            Corpo do Evento
+                        </label>
+
+                        {% render_field form.corpo class="textarea-field min-h-[400px]" %}
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Participantes -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        4. Participantes
+                    </h3>
+
+                    <div>
+                        <label class="form-label ml-1">
+                            Lista de Participantes
+                        </label>
+
+                        {% render_field form.participante class="textarea-field h-28" %}
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Contato -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        5. Informações de Contato
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label class="form-label ml-1">
+                                Pessoa para Contato
+                            </label>
+
+                            {% render_field form.contato class="input-field" %}
+                        </div>
+
+                        <div>
+                            <label class="form-label ml-1">
+                                Telefone
+                            </label>
+
+                            {% render_field form.telefone class="input-field" %}
+                        </div>
+
+                        <div>
+                            <label class="form-label ml-1">
+                                E-mail
+                            </label>
+
+                            {% render_field form.email class="input-field" %}
+                        </div>
+
+                        <div>
+                            <label class="form-label ml-1">
+                                Página do Evento
+                            </label>
+
+                            {% render_field form.url_evento class="input-field" %}
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Navegação -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        6. Configurações de Navegação
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50">
+                            <div class="flex items-center h-6">
+                                {% render_field form.show_in_menu class="checkbox-field" %}
+                            </div>
+
+                            <div>
+                                <label class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px]">
+                                    Mostrar no Menu
+                                </label>
+
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">
+                                    Exibe automaticamente o evento no menu principal.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50">
+                            <div class="flex items-center h-6">
+                                {% render_field form.excluir_nav class="checkbox-field" %}
+                            </div>
+
+                            <div>
+                                <label class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px]">
+                                    Excluir da Navegação
+                                </label>
+
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">
+                                    Remove o evento das navegações automáticas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="pt-6 flex flex-col sm:flex-row gap-4 border-t border-slate-50 dark:border-gray-800">
+                    <button type="submit" class="btn-primary flex-1 group">
+                        <i class="fas fa-calendar-check mr-2 group-hover:shake"></i>
+                        SALVAR ALTERAÇÕES
+                    </button>
+                    <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}"
+                       class="btn-secondary sm:px-12 text-center uppercase tracking-widest">
+                        VOLTAR
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

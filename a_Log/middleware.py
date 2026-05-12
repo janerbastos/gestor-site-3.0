@@ -29,7 +29,6 @@ class PortalSecurityMiddleware:
     """
 
     def __init__(self, get_response):
-
         self.get_response = get_response
 
 
@@ -37,85 +36,30 @@ class PortalSecurityMiddleware:
         """
         Processa request/responses.
         """
-
-        response = self.get_response(
-            request
-        )
-
+        response = self.get_response(request)
         try:
-
-            site = getattr(
-                request,
-                'site',
-                None
-            )
-
+            site = getattr(request, 'site', None)
             # 403
             if response.status_code == 403:
-
-                SecurityService.register_403(
-
-                    request=request,
-
-                    site=site,
-
-                    message='Acesso negado'
-                )
-
+                SecurityService.register_403(request=request, site=site, message='Acesso negado')
             # 404
             elif response.status_code == 404:
-
-                SecurityService.register_404(
-
-                    request=request,
-
-                    site=site,
-
-                    message='Página não encontrada'
-                )
-
+                SecurityService.register_404(request=request, site=site, message='Página não encontrada')
         except Exception:
-
             # middleware segurança nunca deve quebrar request
             pass
-
         return response
 
 
-    def process_exception(
-        self,
-        request,
-        exception
-    ):
+    def process_exception(self, request, exception):
         """
         Captura exceções críticas.
         """
-
         try:
-
-            site = getattr(
-                request,
-                'site',
-                None
-            )
-
+            site = getattr(request, 'site',None)
             # PermissionDenied
-            if isinstance(
-                exception,
-                PermissionDenied
-            ):
-
-                SecurityService.register_403(
-
-                    request=request,
-
-                    site=site,
-
-                    message=str(exception)
-                )
-
+            if isinstance(exception, PermissionDenied):
+                SecurityService.register_403(request=request, site=site, message=str(exception))
         except Exception:
-
             pass
-
         return None

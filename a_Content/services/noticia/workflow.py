@@ -12,7 +12,8 @@ class WorkflowNoticiaService():
         if not content_id:
             return (
                 'error',
-                'ID não informado.'
+                'ID não informado.',
+                None
             )
         try:
             content = Content.objects.get(id=content_id)
@@ -27,11 +28,13 @@ class WorkflowNoticiaService():
             return (
                 'success',
                 f'Conteúdo "{content.titulo}", {content.workflow}.',
+                content
             )
         except Content.DoesNotExist:
             return (
                 'error',
-                'Conteúdo não encontrado.'
+                'Conteúdo não encontrado.',
+                None
             )
 
         except Exception as e:

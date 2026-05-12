@@ -1,6 +1,8 @@
 from a_Content.models import FactoryClassModel
 
-class UpdateNoticiaService:
+
+class UpdateAgendaService:
+
     allowed_fields = [
         'url',
         'titulo',
@@ -12,48 +14,58 @@ class UpdateNoticiaService:
     ]
 
     allowed_data_fields = [
-        'imagem_destaque',
-        'show_imagem',
-        'legenda_imagem'
+        'inicio',
+        'termino',
+        'local',
+        'participante',
+        'responsavel',
+        'cor',
+        'dia_todo',
+        'observacao',
     ]
 
     def execute(self, data):
-
         Content = FactoryClassModel.get_class('content')
-
+        data = data.copy()
         content_id = data.get('id')
-
         if not content_id:
             return (
                 'error',
-                'ID não informado.'
+                'ID não informado.',
+                None
             )
 
         try:
-
+            if data.get('inicio'):
+                data['inicio'] = (
+                    data.get('inicio').isoformat()
+                )
+            if data.get('termino'):
+                data['termino'] = (
+                    data.get('termino').isoformat()
+                )
             content = Content.objects.get(id=content_id)
 
             updated_fields = []
             updated_data_fields = {}
 
-            for field, value in data.items():
-                if field not in self.allowed_fields:
+            # Atualiza campos principais
+            for field in self.allowed_fields:
+                if field not in data:
                     continue
-                setattr(content, field, value)
+                setattr(content, field, data[field])
                 updated_fields.append(field)
 
-            # Atualizad campo data
-            for field, value in data.items():
-                if field not in self.allowed_data_fields:
+            # Atualiza JsonField
+            for field in self.allowed_data_fields:
+                if field not in data:
                     continue
-                if field == 'imagem_destaque' and not data.get('imagem_destaque'):
-                    updated_data_fields[field]=content.data['imagem_destaque']
-                    continue
+                updated_data_fields[field] = data[field]
 
-                updated_data_fields[field]=value
-            
             if updated_data_fields:
-                setattr(content, 'data', updated_data_fields)
+                current_data = content.data or {}
+                current_data.update(updated_data_fields)
+                setattr(content, 'data', current_data)
                 updated_fields.append('data')
 
             if updated_fields:
@@ -68,11 +80,13 @@ class UpdateNoticiaService:
         except Content.DoesNotExist:
             return (
                 'error',
-                'Conteúdo não encontrado.'
+                'Conteúdo não encontrado.',
+                None
             )
 
         except Exception as e:
             return (
                 'error',
-                str(e)
+                str(e),
+                None
             )

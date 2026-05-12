@@ -1,13 +1,14 @@
 from a_Content.models import FactoryClassModel
 
 
-class WorkflowPastaService():
+class WorkflowAgendaService():
     allowed_fields = [
         'workflow',
     ]
     def execute(self, data):
         Content = FactoryClassModel.get_class('content')
         content_id = data.get('content_id')
+
         if not content_id:
             return (
                 'error',
@@ -35,10 +36,10 @@ class WorkflowPastaService():
                 'Conteúdo não encontrado.',
                 None
             )
+
         except Exception as e:
             print(str(e))
             return (
                 'error',
-                str(e),
-                None
+                str(e)
             )

@@ -23,15 +23,7 @@ class AuditService:
     """
 
     @classmethod
-    def register(
-        cls,
-        request,
-        site,
-        action,
-        obj=None,
-        message='',
-        metadata=None
-    ):
+    def register(cls, request, site, action, obj=None, message='', metadata=None):
         """
         Registra evento de auditoria.
         Args:
@@ -112,13 +104,8 @@ class AuditService:
             object_type='User',
             object_id=user.id,
             message=message,
-            ip=cls.get_client_ip(
-                request
-            ),
-            user_agent=request.META.get(
-                'HTTP_USER_AGENT',
-                ''
-            ),
+            ip=cls.get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
             path=request.path
         )
 
@@ -133,13 +120,8 @@ class AuditService:
             object_type='User',
             object_id=user.id,
             message=message,
-            ip=cls.get_client_ip(
-                request
-            ),
-            user_agent=request.META.get(
-                'HTTP_USER_AGENT',
-                ''
-            ),
+            ip=cls.get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
             path=request.path
         )
 
@@ -150,10 +132,7 @@ class AuditService:
         Obtém IP real do cliente.
         Compatível com proxy reverso.
         """
-
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-
         if x_forwarded_for:
             return x_forwarded_for.split(',')[0].strip()
-
         return request.META.get('REMOTE_ADDR')

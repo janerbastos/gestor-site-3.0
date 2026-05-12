@@ -1,6 +1,6 @@
 from a_Content.models import FactoryClassModel
 
-class CreateNoticiaService:
+class CreateAgendaService:
     # Campos que são colunas reais na tabela catalog_content
     common_fields = [
         'url',
@@ -20,6 +20,9 @@ class CreateNoticiaService:
     def execute(self, data):
         Content = FactoryClassModel.get_class('content')
         
+        data['inicio'] = data.get('inicio').isoformat()
+        data['termino'] = data.get('termino').isoformat()
+
         content_params = {}
         metadata = {}
 
@@ -39,12 +42,13 @@ class CreateNoticiaService:
             content = Content.objects.create(**content_params)
             return (
                 'success',
-                f'Notícia "{content.titulo}" registrada com sucesso.',
+                f'Agenda "{content.titulo}" registrada com sucesso.',
                 content,
             )
         except Exception as e:
+            print(e)
             return (
                 'error',
-                f'Erro ao registrar notícia: {str(e)}',
+                f'Erro ao registrar agenda: {str(e)}',
                 None,
             )

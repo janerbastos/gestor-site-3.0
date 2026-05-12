@@ -7,6 +7,7 @@ from a_Site.models import FactoryClassModel
 from a_Content.models import Content
 from a_Content.forms.pagina_forms import FactoryATPageForm
 from a_Content.services.core.dispatcher import ServiceDispatcher
+from a_Content.services.comum_service import BaseContentServiceLog
 
 from a_Acl.anotations import PermissionRequired
 
@@ -22,9 +23,10 @@ def clear_session(request):
 def create_pagina(request, url):
 
     Site = FactoryClassModel.get_class('site')
-    ContentType = FactoryClassModel.get_class('tipo')
-
     site = get_object_or_404(Site, url=url)
+    ContentType = FactoryClassModel.get_class('tipo')
+    service_log = BaseContentServiceLog(request, site)
+
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -46,20 +48,14 @@ def create_pagina(request, url):
     CreateForm = FactoryATPageForm.get_class('create')
 
     if request.method == 'POST':
-
         form = CreateForm(request.POST)
-
         if form.is_valid():
-
             user = request.user
-
             data = form.cleaned_data
-
             data['dono_id'] = user.id
             data['parent_id'] = parent_id
             data['site_id'] = site.id
             data['tipo'] = ContentType.ATPAGINA
-
             result, message, pagina = ServiceDispatcher.dispatch(
                 type_,
                 action,
@@ -71,7 +67,7 @@ def create_pagina(request, url):
             args = [url]
 
             if result == 'success':
-
+                service_log.log_create(pagina) # Registra no serviço de log
                 if parent:
                     args.append(pagina.parent.path)
 
@@ -106,6 +102,7 @@ def update_pagina(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -126,40 +123,28 @@ def update_pagina(request, url):
     CreateForm = FactoryATPageForm.get_class('create')
 
     if request.method == 'POST':
-
         form = CreateForm(request.POST)
-
         if form.is_valid():
-
             data = form.cleaned_data
             data['id'] = content.id
-
-            result, message = ServiceDispatcher.dispatch(
+            result, message, pagina = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data=data
             )
-
             clear_session(request)
-
             args = [url]
-
             if result == 'success':
-
+                service_log.log_update(pagina, content) # Registra no serviço de log
                 if parent:
                     args.append(parent.path)
-
                 messages.success(request, message)
-
             else:
                 messages.error(request, message)
-
             return redirect(
                 reverse('content:dashboard', args=args)
             )
-
     else:
-
         form = CreateForm(initial={
             'titulo': content.titulo,
             'url': content.url,
@@ -189,42 +174,34 @@ def delete_pagina(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
-
+    service_log = BaseContentServiceLog(request, site)
     type_ = request.session.get('type')
     action = request.session.get('action')
     content_id = request.session.get('content_id')
-
     content = get_object_or_404(Content, id=content_id)
     parent = content.parent
-
     if request.method == 'POST':
-
         result, message = ServiceDispatcher.dispatch(
             type_,
             action,
             data={'content_id':content_id}
         )
-
         # Limpar session
         clear_session(request)
-
         args = [url]
         if result == 'success':
+            service_log.log_delete(content) # Registra no serviço de log
             if parent:
                 args.append(parent.path)
-
             messages.success(request, message)
         else:
             messages.error(request, message)
         return redirect(reverse('content:dashboard', args=args))
-
-
     context = {
         'site' : site,
         'parent': parent,
         'content': content
     }
-
     return render(request, f'content/{type_.lower()}-{action}.html', context)
 
 
@@ -232,8 +209,8 @@ def delete_pagina(request, url):
 def workflow_pagina(request, url):
 
     Site = FactoryClassModel.get_class('site')
-
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -252,12 +229,9 @@ def workflow_pagina(request, url):
     parent = content.parent
 
     if request.method == 'POST':
-
         workflow = request.POST.get('workflow')
-
         if workflow:
-
-            result, message = ServiceDispatcher.dispatch(
+            result, message, obj = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data={
@@ -265,10 +239,9 @@ def workflow_pagina(request, url):
                     'workflow': workflow
                 }
             )
-
+            service_log.log_update(obj, content) # Registra no serviço de log
             # Atualizar objeto após alteração
             content.refresh_from_db()
-
             context = {
                 'site': site,
                 'parent': parent,
@@ -276,19 +249,16 @@ def workflow_pagina(request, url):
                 'message': message,
                 'result': result
             }
-
             return render(
                 request,
                 'content/partials/content-table-row.html',
                 context
             )
-
     context = {
         'site': site,
         'parent': parent,
         'content': content
     }
-
     return render(
         request,
         f'content/{type_.lower()}-{action}.html',

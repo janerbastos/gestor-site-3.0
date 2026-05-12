@@ -63,9 +63,7 @@ class GoogleAnalyticsService:
         Retorna cliente autenticado GA4.
         """
 
-        return BetaAnalyticsDataClient.from_service_account_file(
-            cls.CREDENTIALS_FILE
-        )
+        return BetaAnalyticsDataClient.from_service_account_file(cls.CREDENTIALS_FILE)
 
 
     @classmethod
@@ -89,7 +87,6 @@ class GoogleAnalyticsService:
 
         client = cls.get_client()
         request = RunReportRequest(
-
             property=f'properties/{cls.PROPERTY_ID}',
             metrics=[
                 Metric(name=metric)
@@ -110,12 +107,8 @@ class GoogleAnalyticsService:
             limit=limit
         )
 
-        response = client.run_report(
-            request
-        )
-
+        response = client.run_report(request)
         result = []
-
         for row in response.rows:
             item = {
                 'dimensions': [
@@ -127,7 +120,6 @@ class GoogleAnalyticsService:
                     for value in row.metric_values
                 ]
             }
-
             result.append(item)
 
         if cache_key:
@@ -140,18 +132,12 @@ class GoogleAnalyticsService:
 
 
     @classmethod
-    def get_page_views(
-        cls,
-        days=7
-    ):
+    def get_page_views( cls, days=7):
         """
         Retorna total pageviews.
         """
-
         result = cls.run_report(
-            metrics=[
-                'screenPageViews'
-            ],
+            metrics=['screenPageViews'],
             start_date=f'{days}daysAgo',
             cache_key=f'ga4_pageviews_{days}'
         )
@@ -165,18 +151,12 @@ class GoogleAnalyticsService:
 
 
     @classmethod
-    def get_active_users(
-        cls,
-        days=7
-    ):
+    def get_active_users(cls, days=7):
         """
         Retorna usuários ativos.
         """
-
         result = cls.run_report(
-            metrics=[
-                'activeUsers'
-            ],
+            metrics=['activeUsers'],
             start_date=f'{days}daysAgo',
             cache_key=f'ga4_active_users_{days}'
         )
@@ -184,28 +164,17 @@ class GoogleAnalyticsService:
         if not result:
             return 0
 
-        return int(
-            result[0]['metrics'][0]
-        )
+        return int(result[0]['metrics'][0])
 
 
     @classmethod
-    def get_top_pages(
-        cls,
-        days=7,
-        limit=10
-    ):
+    def get_top_pages(cls, days=7, limit=10):
         """
         Retorna páginas mais acessadas.
         """
-
         return cls.run_report(
-            metrics=[
-                'screenPageViews'
-            ],
-            dimensions=[
-                'pagePath'
-            ],
+            metrics=['screenPageViews'],
+            dimensions=['pagePath'],
             start_date=f'{days}daysAgo',
             limit=limit,
             cache_key=f'ga4_top_pages_{days}_{limit}'
@@ -213,22 +182,13 @@ class GoogleAnalyticsService:
 
 
     @classmethod
-    def get_top_cities(
-        cls,
-        days=7,
-        limit=10
-    ):
+    def get_top_cities(cls, days=7, limit=10):
         """
         Retorna cidades com mais acessos.
         """
-
         return cls.run_report(
-            metrics=[
-                'activeUsers'
-            ],
-            dimensions=[
-                'city'
-            ],
+            metrics=['activeUsers'],
+            dimensions=['city'],
             start_date=f'{days}daysAgo',
             limit=limit,
             cache_key=f'ga4_top_cities_{days}_{limit}'
@@ -236,43 +196,26 @@ class GoogleAnalyticsService:
 
 
     @classmethod
-    def get_devices(
-        cls,
-        days=7
-    ):
+    def get_devices(cls, days=7):
         """
         Retorna acessos por dispositivo.
         """
-
         return cls.run_report(
-            metrics=[
-                'activeUsers'
-            ],
-            dimensions=[
-                'deviceCategory'
-            ],
+            metrics=['activeUsers'],
+            dimensions=['deviceCategory'],
             start_date=f'{days}daysAgo',
             cache_key=f'ga4_devices_{days}'
         )
 
 
     @classmethod
-    def get_traffic_sources(
-        cls,
-        days=7,
-        limit=10
-    ):
+    def get_traffic_sources(cls, days=7, limit=10):
         """
         Retorna origem do tráfego.
         """
-
         return cls.run_report(
-            metrics=[
-                'sessions'
-            ],
-            dimensions=[
-                'sessionSource'
-            ],
+            metrics=['sessions'],
+            dimensions=['sessionSource'],
             start_date=f'{days}daysAgo',
             limit=limit,
             cache_key=f'ga4_sources_{days}_{limit}'

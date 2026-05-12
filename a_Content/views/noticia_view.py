@@ -7,6 +7,7 @@ from a_Site.models import FactoryClassModel
 from a_Content.models import Content
 from a_Content.forms.noticia_forms import FactoryATNoticiaForm
 from a_Content.services.core.dispatcher import ServiceDispatcher
+from a_Content.services.comum_service import BaseContentServiceLog
 
 from a_Acl.anotations import PermissionRequired
 
@@ -23,8 +24,8 @@ def create_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     ContentType = FactoryClassModel.get_class('tipo')
-
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -50,34 +51,25 @@ def create_noticia(request, url):
         form = CreateForm(request.POST, request.FILES)
 
         if form.is_valid():
-
             user = request.user
-
             data = form.cleaned_data
-
             data['dono_id'] = user.id
             data['parent_id'] = parent_id
             data['site_id'] = site.id
             data['tipo'] = ContentType.ATNOTICIA
             data['imagem_destaque'] = request.POST.get('imagem_destaque')
-
-            result, message, pagina = ServiceDispatcher.dispatch(
+            result, message, noticia = ServiceDispatcher.dispatch(
                 type_,
                 action,
-                data=data
+                data=data,
             )
-
             clear_session(request)
-
             args = [url]
-
             if result == 'success':
-
+                service_log.log_create(noticia) # Registra no serviço de log
                 if parent:
-                    args.append(pagina.parent.path)
-
+                    args.append(noticia.parent.path)
                 messages.success(request, message)
-
             else:
                 messages.error(request, message)
 
@@ -107,6 +99,7 @@ def update_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -127,41 +120,29 @@ def update_noticia(request, url):
     CreateForm = FactoryATNoticiaForm.get_class('create')
 
     if request.method == 'POST':
-
         form = CreateForm(request.POST, request.FILES)
-
         if form.is_valid():
-
             data = form.cleaned_data
             data['id'] = content.id
             data['imagem_destaque'] = request.POST.get('imagem_destaque')
-
-            result, message = ServiceDispatcher.dispatch(
+            result, message, obj = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data=data
             )
-
             clear_session(request)
-
             args = [url]
-
             if result == 'success':
-
+                service_log.log_update(obj, content) # registra no serviço de log
                 if parent:
                     args.append(parent.path)
-
                 messages.success(request, message)
-
             else:
                 messages.error(request, message)
-
             return redirect(
                 reverse('content:dashboard', args=args)
             )
-
     else:
-
         form = CreateForm(initial={
             'titulo': content.titulo,
             'url': content.url,
@@ -170,7 +151,6 @@ def update_noticia(request, url):
             'tag'  : content.tag,
             'show_in_menu': content.show_in_menu,
             'excluir_nav': content.excluir_nav,
-            # 'imagem_destaque' : content.data['imagem_destaque'],
             'legenda_imagem' : content.data['legenda_imagem'],
             'show_imagem' : content.data['show_imagem'],
         })
@@ -194,6 +174,7 @@ def delete_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -215,6 +196,7 @@ def delete_noticia(request, url):
 
         args = [url]
         if result == 'success':
+            service_log.log_delete(content) # registra no serviço de log
             if parent:
                 args.append(parent.path)
 
@@ -238,6 +220,7 @@ def workflow_noticia(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
+    service_log = BaseContentServiceLog(request, site)
 
     type_ = request.session.get('type')
     action = request.session.get('action')
@@ -257,7 +240,7 @@ def workflow_noticia(request, url):
     if request.method == 'POST':
         workflow = request.POST.get('workflow')
         if workflow:
-            result, message = ServiceDispatcher.dispatch(
+            result, message, obj = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data={
@@ -265,6 +248,8 @@ def workflow_noticia(request, url):
                     'workflow': workflow
                 }
             )
+
+            service_log.log_update(content, obj) # registra no serviço de log
 
             # Atualizar objeto após alteração
             content.refresh_from_db()

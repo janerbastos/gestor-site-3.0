@@ -2,11 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib import messages
+from django.utils.dateparse import parse_datetime
 
 from a_Site.models import FactoryClassModel
-from a_Account.anotations import PermissionRoot
 from a_Content.models import Content
-from a_Content.forms.pasta_forms import FactoryATPastaForm
+from a_Content.forms.evento_forms import FactoryATEventoForm
 from a_Content.services.core.dispatcher import ServiceDispatcher
 from a_Content.services.comum_service import BaseContentServiceLog
 
@@ -20,8 +20,8 @@ def clear_session(request):
         request.session.pop(key, None)
 
 
-@PermissionRequired('create', 'ATPasta')
-def create_pasta(request, url):
+@PermissionRequired('create', 'ATEvento')
+def create_evento(request, url):
 
     Site = FactoryClassModel.get_class('site')
     ContentType = FactoryClassModel.get_class('tipo')
@@ -31,50 +31,62 @@ def create_pasta(request, url):
     type_ = request.session.get('type')
     action = request.session.get('action')
     parent_id = request.session.get('parent_id')
+
     if not all([type_, action]):
         messages.error(request, 'Sessão inválida.')
         return redirect(reverse('content:dashboard', args=[url]))
+
     parent = None
+
     if parent_id:
         parent = get_object_or_404(
             Content,
             id=parent_id,
             site=site
         )
-    CreateForm = FactoryATPastaForm.get_class('create')
+
+    CreateForm = FactoryATEventoForm.get_class('create')
+
     if request.method == 'POST':
-        form = CreateForm(request.POST)
+
+        form = CreateForm(request.POST, request.FILES)
+
         if form.is_valid():
             user = request.user
             data = form.cleaned_data
             data['dono_id'] = user.id
             data['parent_id'] = parent_id
             data['site_id'] = site.id
-            data['tipo'] = ContentType.ATPASTA
-            result, message, pasta = ServiceDispatcher.dispatch(
+            data['tipo'] = ContentType.ATEVENTO
+            result, message, evento = ServiceDispatcher.dispatch(
                 type_,
                 action,
-                data=data
+                data=data,
             )
             clear_session(request)
             args = [url]
             if result == 'success':
-                service_log.log_create(pasta)
+                service_log.log_create(evento) # Registra no serviço de log
                 if parent:
-                    args.append(parent.url)
+                    args.append(evento.parent.path)
                 messages.success(request, message)
             else:
                 messages.error(request, message)
+
             return redirect(
                 reverse('content:dashboard', args=args)
             )
+
     else:
+
         form = CreateForm()
+
     context = {
         'site': site,
         'form': form,
         'parent': parent
     }
+
     return render(
         request,
         f'content/{type_.lower()}-{action}.html',
@@ -82,8 +94,8 @@ def create_pasta(request, url):
     )
 
 
-@PermissionRequired('update', 'ATPasta')
-def update_pasta(request, url):
+@PermissionRequired('update', 'ATEvento')
+def update_evento(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -105,13 +117,14 @@ def update_pasta(request, url):
 
     parent = content.parent
 
-    CreateForm = FactoryATPastaForm.get_class('create')
+    CreateForm = FactoryATEventoForm.get_class('create')
+
     if request.method == 'POST':
-        form = CreateForm(request.POST)
+        form = CreateForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
             data['id'] = content.id
-            result, message, pasta = ServiceDispatcher.dispatch(
+            result, message, obj = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data=data
@@ -119,9 +132,9 @@ def update_pasta(request, url):
             clear_session(request)
             args = [url]
             if result == 'success':
-                service_log.log_update(pasta, content)
+                service_log.log_update(obj, content) # registra no serviço de log
                 if parent:
-                    args.append(parent.url)
+                    args.append(parent.path)
                 messages.success(request, message)
             else:
                 messages.error(request, message)
@@ -129,19 +142,47 @@ def update_pasta(request, url):
                 reverse('content:dashboard', args=args)
             )
     else:
+        event_data = content.data or {}
+
+        print(parse_datetime(
+                event_data.get('inicio')
+            ).strftime('%Y-%m-%dT%H:%M') if event_data.get('inicio') else '')
+
         form = CreateForm(initial={
             'titulo': content.titulo,
             'url': content.url,
             'descricao': content.descricao,
+            'corpo': content.corpo,
+            'tag': content.tag,
+
             'show_in_menu': content.show_in_menu,
             'excluir_nav': content.excluir_nav,
+
+            'inicio': parse_datetime(
+                event_data.get('inicio')
+            ).strftime('%Y-%m-%dT%H:%M') if event_data.get('inicio') else '',
+
+            'termino': parse_datetime(
+                event_data.get('termino')
+            ).strftime('%Y-%m-%dT%H:%M') if event_data.get('inicio') else '',
+
+            'local': event_data.get('local'),
+            'participante': event_data.get('participante'),
+            'url_evento': event_data.get('url_evento'),
+            'contato': event_data.get('contato'),
+            'email': event_data.get('email'),
+            'telefone': event_data.get('telefone'),
         })
+
+
+
     context = {
         'site': site,
         'form': form,
         'parent': parent,
         'content': content
     }
+
     return render(
         request,
         f'content/{type_.lower()}-{action}.html',
@@ -149,36 +190,42 @@ def update_pasta(request, url):
     )
 
 
-@PermissionRequired('delete', 'ATPasta')
-def delete_pasta(request, url):
+@PermissionRequired('delete', 'ATEvento')
+def delete_evento(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
     service_log = BaseContentServiceLog(request, site)
+
     type_ = request.session.get('type')
     action = request.session.get('action')
     content_id = request.session.get('content_id')
+
     content = get_object_or_404(Content, id=content_id)
-    
     parent = content.parent
 
     if request.method == 'POST':
+
         result, message = ServiceDispatcher.dispatch(
             type_,
             action,
             data={'content_id':content_id}
         )
+
         # Limpar session
         clear_session(request)
+
         args = [url]
         if result == 'success':
-            service_log.log_delete(content)
+            service_log.log_delete(content) # registra no serviço de log
             if parent:
-                args.append(parent.url)
+                args.append(parent.path)
+
             messages.success(request, message)
         else:
             messages.error(request, message)
         return redirect(reverse('content:dashboard', args=args))
+
 
     context = {
         'site' : site,
@@ -189,8 +236,8 @@ def delete_pasta(request, url):
     return render(request, f'content/{type_.lower()}-{action}.html', context)
 
 
-@PermissionRequired('workflow', 'ATPasta')
-def workflow_pasta(request, url):
+@PermissionRequired('workflow', 'ATEvento')
+def workflow_evento(request, url):
 
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
@@ -214,7 +261,7 @@ def workflow_pasta(request, url):
     if request.method == 'POST':
         workflow = request.POST.get('workflow')
         if workflow:
-            result, message, pasta = ServiceDispatcher.dispatch(
+            result, message, obj = ServiceDispatcher.dispatch(
                 type_,
                 action,
                 data={
@@ -222,8 +269,8 @@ def workflow_pasta(request, url):
                     'workflow': workflow
                 }
             )
-            # Registra no serviço de log
-            service_log.log_update(pasta, content)
+
+            service_log.log_update(content, obj) # registra no serviço de log
 
             # Atualizar objeto após alteração
             content.refresh_from_db()
