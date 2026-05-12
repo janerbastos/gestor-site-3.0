@@ -7,6 +7,7 @@ from a_Content.views.evento_view import create_evento, update_evento, delete_eve
 from a_Content.views.agenda_view import create_agenda, update_agenda, delete_agenda, workflow_agenda
 from a_Content.views.servico_view import create_servico, update_servico, delete_servico, workflow_servico
 from a_Content.views.link_view import create_link, update_link, delete_link, workflow_link
+from a_Content.views.banner_view import create_banner, update_banner, delete_banner, workflow_banner
 from a_Content.views.imagem_manage_view import imagem_manage_list, imagem_manage_upload, imagem_manage_set
 
 __ALL__ = [
@@ -20,4 +21,5 @@ __ALL__ = [
     'create_agenda', 'update_agenda', 'delete_agenda', 'workflow_agenda',
     'create_servico', 'update_servico', 'delete_servico', 'workflow_servico',
     'create_link', 'update_link', 'delete_link', 'workflow_link',
+    'create_banner', 'update_banner', 'delete_banner', 'workflow_banner'
     ]

@@ -42,4 +42,9 @@ SERVICES = {
     "ATLink.update"  : "a_Content.services.link.update.UpdateLinkService",
     "ATLink.delete"  : "a_Content.services.link.delete.DeleteLinkService",
     "ATLink.workflow": "a_Content.services.link.workflow.WorkflowLinkService",
+
+    "ATBanner.create"  : "a_Content.services.banner.create.CreateBannerService",
+    "ATBanner.update"  : "a_Content.services.banner.update.UpdateBannerService",
+    "ATBanner.delete"  : "a_Content.services.banner.delete.DeleteBannerService",
+    "ATBanner.workflow": "a_Content.services.banner.workflow.WorkflowBannerService",
 }

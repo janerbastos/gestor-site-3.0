@@ -17,7 +17,7 @@ class ImagemCreateForm(forms.ModelForm):
     )
 
     arquivo = forms.ImageField(
-        label='Arquivo de arquivo',
+        label='Arquivo da imagem',
         required=False,
         help_text='Formatos aceitos: JPG, PNG. Tamanho recomendado: 1200x630px.',
         widget=forms.ClearableFileInput(attrs={'class': 'input-field', 'accept': 'image/*'})
