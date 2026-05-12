@@ -1,0 +1,93 @@
+<div class="p-20 text-center">
+
+    <h1 class="text-2xl font-black text-slate-900 dark:text-white">
+        {{ content.titulo }}
+    </h1>
+
+    <span
+        class="
+            inline-flex items-center mt-4 px-4 py-2 rounded-3xl
+            text-xs font-black uppercase tracking-widest
+            {% if content.workflow == 'Publico' %}
+                bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+            {% elif content.workflow == 'Revisao' %}
+                bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400
+            {% else %}
+                bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+            {% endif %}
+        "
+    >
+        {{ content.workflow }}
+    </span>
+
+    <p class="mt-6 text-xs font-black text-slate-400 uppercase tracking-widest">
+        Fluxo de Publicação
+    </p>
+
+    <form 
+        hx-post="{% url 'content:workflow-atagenda' site.url %}"
+        hx-target="#content-row-{{content.id}}"
+        hx-swap="outerHTML"
+        class="mt-4 space-y-4">
+        {% csrf_token %}
+
+        <select
+            name="workflow"
+            class="select-field"
+            required
+        >
+            <option value="">
+                Selecione uma ação
+            </option>
+
+            {% if content.workflow == 'Privado' %}
+
+                <option value="Publico">
+                    Publicar conteúdo
+                </option>
+
+                <option value="Revisao">
+                    Enviar para revisão
+                </option>
+
+            {% elif content.workflow == 'Publico' %}
+
+                <option value="Privado">
+                    Retirar conteúdo
+                </option>
+
+                <option value="Revisao">
+                    Enviar para revisão
+                </option>
+
+            {% elif content.workflow == 'Revisao' %}
+
+                <option value="Publico">
+                    Aprovar publicação
+                </option>
+
+                <option value="Privado">
+                    Rejeitar publicação
+                </option>
+
+            {% endif %}
+        </select>
+
+        <button
+            type="submit"
+            @click="modalOpen = false"
+            class="
+                inline-flex items-center gap-2
+                px-5 py-3 rounded-2xl
+                bg-blue-600 hover:bg-blue-700
+                text-white text-xs font-black uppercase tracking-widest
+                transition-all
+            "
+        >
+            <i class="fa-solid fa-check"></i>
+            Aplicar ação
+        </button>
+
+    </form>
+
+</div>

@@ -32,4 +32,9 @@ SERVICES = {
     "ATAgenda.update"  : "a_Content.services.agenda.update.UpdateAgendaService",
     "ATAgenda.delete"  : "a_Content.services.agenda.delete.DeleteAgendaService",
     "ATAgenda.workflow": "a_Content.services.agenda.workflow.WorkflowAgendaService",
+
+    "ATServico.create"  : "a_Content.services.servico.create.CreateServicoService",
+    "ATServico.update"  : "a_Content.services.servico.update.UpdateServicoService",
+    "ATServico.delete"  : "a_Content.services.servico.delete.DeleteServicoService",
+    "ATServico.workflow": "a_Content.services.servico.workflow.WorkflowServicoService",
 }
