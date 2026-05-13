@@ -1,0 +1,310 @@
+{% extends 'comum/Base.html' %}
+{% load widget_tweaks static %}
+
+{% block titulo %}Novo Arquivo | {{ site.titulo }}{% endblock %}
+
+{% block body_content %}
+<div class="p-6 animate-fade-in-up" x-data="{ modalOpen: false }">
+
+    <!-- Header -->
+    <div class="mb-8 max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between items-center gap-6">
+
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fas fa-file-arrow-up text-lg"></i>
+                </div>
+
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    Novo Arquivo
+                </h1>
+            </div>
+
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Criando novo arquivo para <strong>{{ site.titulo }}</strong>.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}"
+               class="px-6 py-3 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-xs font-black rounded-2xl hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2 shadow-sm">
+
+                <i class="fas fa-times text-red-500"></i>
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="max-w-4xl mx-auto">
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
+                {% for error in form.non_field_errors %}
+                    <p class="text-sm text-red-600 dark:text-red-400 font-bold flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="card-base p-8 sm:p-10 space-y-8">
+
+                <!-- Informações -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        1. Informações do Arquivo
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Título -->
+                        <div class="md:col-span-2">
+                            <label class="form-label ml-1">
+                                Título do Arquivo
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-heading text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                                </div>
+
+                                {% render_field form.titulo class="input-field" %}
+                            </div>
+
+                            {% if form.titulo.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                                    {{ form.titulo.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- URL -->
+                        <div>
+                            <label class="form-label ml-1">
+                                URL (Slug)
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-link text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                                </div>
+
+                                {% render_field form.url class="input-field font-mono" %}
+                            </div>
+
+                            <p class="text-[9px] text-slate-400 font-medium ml-1 mt-1 uppercase tracking-tight italic">
+                                Apenas letras, números e hífens.
+                            </p>
+
+                            {% if form.url.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                                    {{ form.url.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Tags -->
+                        <div>
+                            <label class="form-label ml-1">
+                                Tags
+                            </label>
+
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-tags text-slate-300 group-focus-within:text-indigo-500 transition-colors"></i>
+                                </div>
+
+                                {% render_field form.tag class="input-field" %}
+                            </div>
+
+                            {% if form.tag.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                                    {{ form.tag.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="md:col-span-2">
+                            <label class="form-label ml-1">
+                                Descrição
+                            </label>
+
+                            {% render_field form.descricao class="textarea-field h-28" %}
+
+                            {% if form.descricao.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                                    {{ form.descricao.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Upload -->
+                        <div class="md:col-span-2">
+                            <label class="form-label ml-1">
+                                Documento do Arquivo
+                            </label>
+
+                            <div class="p-6 rounded-2xl border border-dashed border-slate-300 dark:border-gray-700 bg-slate-50 dark:bg-gray-800/50">
+
+                                <div class="flex flex-col items-center justify-center text-center space-y-3">
+
+                                    <div class="h-14 w-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600"
+                                        @click="modalOpen=true"
+                                        hx-get="{% url 'content:doc-manage-list' site.url %}"
+                                        hx-target="#modal-body-content"
+                                        hx-swap="innerHTML"
+                                    >
+                                        <i class="fas fa-file-upload text-2xl"></i>
+                                    </div>
+
+                                    <div>
+                                        <p class="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-wide">
+                                            Documento selecionado
+                                        </p>
+
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                            Utilize PDF, DOC, XLS, ZIP ou arquivos similares.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4" id="documento-destaque">
+                                    
+                                    {% if content.data.arquivo_destaque %}
+                                    <div class="p-5 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-900/10 max-w-2xl">
+                                        
+                                        <div class="flex items-start gap-4">
+                                            
+                                            <div class="h-12 w-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                                                <i class="fas fa-file-alt text-lg"></i>
+                                            </div>
+
+                                            <div class="flex-1">
+                                                
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <span class="px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-black uppercase tracking-widest">
+                                                        Documento Selecionado
+                                                    </span>
+                                                </div>
+
+                                                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                                                    Um documento já foi vinculado como arquivo de destaque deste conteúdo.
+                                                </p>
+
+                                                <a href="{{ content.data.arquivo_destaque }}"
+                                                target="_blank"
+                                                class="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700 transition-all">
+
+                                                    <i class="fas fa-arrow-up-right-from-square text-indigo-500"></i>
+                                                    Abrir Documento
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {{ form.arquivo_destaque }}
+
+                                </div>
+
+
+                            </div>
+
+                            {% if form.arquivo_destaque.errors %}
+                                <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">
+                                    {{ form.arquivo_destaque.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-50 dark:border-gray-800">
+
+                <!-- Navegação -->
+                <div class="space-y-6">
+
+                    <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                        2. Configurações de Navegação
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800">
+                            <div class="flex items-center h-6">
+                                {% render_field form.show_in_menu class="checkbox-field" %}
+                            </div>
+
+                            <div class="text-sm">
+                                <label class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">
+                                    Mostrar no Menu
+                                </label>
+
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">
+                                    Exibe automaticamente o arquivo no menu principal.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800">
+                            <div class="flex items-center h-6">
+                                {% render_field form.excluir_nav class="checkbox-field" %}
+                            </div>
+
+                            <div class="text-sm">
+                                <label class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px] cursor-pointer">
+                                    Excluir da Navegação
+                                </label>
+
+                                <p class="text-slate-500 dark:text-gray-400 text-[9px] mt-1">
+                                    Oculta o arquivo das navegações automáticas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="pt-6 flex flex-col sm:flex-row gap-4 border-t border-slate-50 dark:border-gray-800">
+
+                    <button type="submit" class="btn-primary flex-1 group">
+                        <i class="fas fa-save mr-2 group-hover:shake"></i>
+                        SALVAR ARQUIVO
+                    </button>
+
+                    <a href="{% if parent %}{% url 'content:dashboard' site.url parent.path %}{% else %}{% url 'content:dashboard' site.url %}{% endif %}"
+                       class="btn-secondary sm:px-12 text-center uppercase tracking-widest">
+
+                        VOLTAR
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tip -->
+        <div class="mt-8 flex items-center gap-4 p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-900/20">
+
+            <div class="h-10 w-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                    Dica de Organização
+                </h4>
+
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">
+                    Utilize títulos claros e tags descritivas para facilitar a busca e organização dos arquivos no portal.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% include 'content/partials/modal-doc-manage.html' %}
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 <div class="m-5 p-5">
     <div class="flex justify-between items-center mb-8">
         <form class="flex-grow mr-4"
-            hx-get="{% url 'content:imagem-manage-list' site.url %}"
+            hx-get="{% url 'content:doc-manage-list' site.url %}"
             hx-target="#modal-body-content"
             hx-swap="innerHTML"
             method="get"
@@ -15,7 +15,7 @@
             </div>
         </form>
         <button
-            hx-get="{% url 'content:imagem-manage-upload' site.url %}"
+            hx-get="{% url 'content:doc-manage-upload' site.url %}"
             hx-target="#modal-body-content"
             hx-swap="innerHTML"
             class="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-full hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/30 flex items-center gap-2"
@@ -24,10 +24,10 @@
             <span>Upload</span>
         </button>
     </div>
-    
+
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    {% for imagem in arquivos %}
-        {% include 'content/partials/imagem-card.html' %}
+    {% for doc in arquivos %}
+        {% include 'content/partials/documento-card.html' with doc=doc %}
     {% empty %}
       <div class="col-span-full py-10 text-center text-slate-500 dark:text-gray-400">
           <i class="fas fa-box-open text-5xl mb-3"></i>

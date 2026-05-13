@@ -1,0 +1,38 @@
+<div class="card-base p-5 rounded-3xl cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+     hx-get="{% url 'content:doc-manage-set' site.url doc.id %}"
+     hx-target="#documento-destaque"
+     hx-swap="innerHTML"
+     @click="modalOpen=false">
+
+    <div class="flex flex-col items-center text-center space-y-4">
+
+        <!-- Ícone -->
+        <div class="h-20 w-20 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm group-hover:scale-105 transition-transform">
+
+            <i class="fas fa-file-alt text-3xl"></i>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="space-y-2">
+
+            <h4 class="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide line-clamp-2">
+                {{ doc.titulo }}
+            </h4>
+
+            {% if doc.arquivo %}
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
+                    Documento disponível
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Ação -->
+        <div class="pt-2">
+            <span class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+
+                <i class="fas fa-check-circle"></i>
+                Selecionar
+            </span>
+        </div>
+    </div>
+</div>

@@ -47,4 +47,9 @@ SERVICES = {
     "ATBanner.update"  : "a_Content.services.banner.update.UpdateBannerService",
     "ATBanner.delete"  : "a_Content.services.banner.delete.DeleteBannerService",
     "ATBanner.workflow": "a_Content.services.banner.workflow.WorkflowBannerService",
+
+    "ATArquivo.create"  : "a_Content.services.arquivo.create.CreateArquivoService",
+    "ATArquivo.update"  : "a_Content.services.arquivo.update.UpdateArquivoService",
+    "ATArquivo.delete"  : "a_Content.services.arquivo.delete.DeleteArquivoService",
+    "ATArquivo.workflow": "a_Content.services.arquivo.workflow.WorkflowArquivoService",
 }

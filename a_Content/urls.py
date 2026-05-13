@@ -2,6 +2,7 @@ from django.urls import path
 from a_Content.views import (
     dashboard, 
     imagem_manage_list, imagem_manage_upload, imagem_manage_set,
+    doc_manage_list, doc_manage_upload, doc_manage_set,
     create_pagina, update_pagina, delete_pagina, workflow_pagina,
     create_pasta, update_pasta, delete_pasta, workflow_pasta,
     create_noticia, update_noticia, delete_noticia, workflow_noticia,
@@ -10,7 +11,8 @@ from a_Content.views import (
     create_agenda, update_agenda, delete_agenda, workflow_agenda,
     create_servico, update_servico, delete_servico, workflow_servico,
     create_link, update_link, delete_link, workflow_link,
-    create_banner, update_banner, delete_banner, workflow_banner
+    create_banner, update_banner, delete_banner, workflow_banner,
+    create_arquivo, update_arquivo, delete_arquivo, workflow_arquivo,
 )
 
 app_name = 'content'
@@ -73,8 +75,19 @@ urlpatterns = [
     path('site/<slug:url>/delete-banner/', delete_banner, name='delete-atbanner'),
     path('site/<slug:url>/workflow-banner/', workflow_banner, name='workflow-atbanner'),
 
+    # Arquivo
+    path('site/<slug:url>/create-arquivo/', create_arquivo, name='create-atarquivo'),
+    path('site/<slug:url>/update-arquivo/', update_arquivo, name='update-atarquivo'),
+    path('site/<slug:url>/delete-arquivo/', delete_arquivo, name='delete-atarquivo'),
+    path('site/<slug:url>/workflow-arquivo/', workflow_arquivo, name='workflow-atarquivo'),
+
     # Imagem Manager
     path('site/<slug:url>/imagem-manager-list/', imagem_manage_list, name='imagem-manage-list'),
     path('site/<slug:url>/imagem-manager-upload/', imagem_manage_upload, name='imagem-manage-upload'),
     path('site/<slug:url>/<int:oid>/imagem-manager-set/', imagem_manage_set, name='imagem-manage-set'),
+
+    # Doc Manager
+    path('site/<slug:url>/doc-manager-list/', doc_manage_list, name='doc-manage-list'),
+    path('site/<slug:url>/doc-manager-upload/', doc_manage_upload, name='doc-manage-upload'),
+    path('site/<slug:url>/<int:oid>/doc-manager-set/', doc_manage_set, name='doc-manage-set'),
 ]

@@ -3,12 +3,13 @@ from django.urls import reverse
 
 from a_Site.models import FactoryClassModel
 from a_Content.forms.imagam_form import ImagemCreateForm
+from a_Content.models import ArquivoMidia
 
 
 def imagem_manage_list(request, url):
     Site = FactoryClassModel.get_class('site')
     site = get_object_or_404(Site, url=url)
-    arquivos = site.arquivos.all()
+    arquivos = site.arquivos.filter(tipo_geral=ArquivoMidia.IMAGEM)
 
     q = request.GET.get('q')
     if q:
