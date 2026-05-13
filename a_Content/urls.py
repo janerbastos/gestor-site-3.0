@@ -13,6 +13,7 @@ from a_Content.views import (
     create_link, update_link, delete_link, workflow_link,
     create_banner, update_banner, delete_banner, workflow_banner,
     create_arquivo, update_arquivo, delete_arquivo, workflow_arquivo,
+    create_viewer, update_viewer, delete_viewer, workflow_viewer,
 )
 
 app_name = 'content'
@@ -81,10 +82,17 @@ urlpatterns = [
     path('site/<slug:url>/delete-arquivo/', delete_arquivo, name='delete-atarquivo'),
     path('site/<slug:url>/workflow-arquivo/', workflow_arquivo, name='workflow-atarquivo'),
 
+    # Visão
+    path('site/<slug:url>/create-viewer/', create_viewer, name='create-atviewer'),
+    path('site/<slug:url>/update-viewer/', update_viewer, name='update-atviewer'),
+    path('site/<slug:url>/delete-viewer/', delete_viewer, name='delete-atviewer'),
+    path('site/<slug:url>/workflow-viewer/', workflow_viewer, name='workflow-atviewer'),
+
     # Imagem Manager
     path('site/<slug:url>/imagem-manager-list/', imagem_manage_list, name='imagem-manage-list'),
     path('site/<slug:url>/imagem-manager-upload/', imagem_manage_upload, name='imagem-manage-upload'),
     path('site/<slug:url>/<int:oid>/imagem-manager-set/', imagem_manage_set, name='imagem-manage-set'),
+    
 
     # Doc Manager
     path('site/<slug:url>/doc-manager-list/', doc_manage_list, name='doc-manage-list'),

@@ -9,6 +9,7 @@ from a_Content.views.servico_view import create_servico, update_servico, delete_
 from a_Content.views.link_view import create_link, update_link, delete_link, workflow_link
 from a_Content.views.banner_view import create_banner, update_banner, delete_banner, workflow_banner
 from a_Content.views.arquivo_view import create_arquivo, update_arquivo, delete_arquivo, workflow_arquivo
+from a_Content.views.viewer_view import create_viewer, update_viewer, delete_viewer, workflow_viewer
 from a_Content.views.imagem_manage_view import imagem_manage_list, imagem_manage_upload, imagem_manage_set
 from a_Content.views.doc_manage_view import doc_manage_list, doc_manage_upload, doc_manage_set
 
@@ -25,5 +26,6 @@ __ALL__ = [
     'create_servico', 'update_servico', 'delete_servico', 'workflow_servico',
     'create_link', 'update_link', 'delete_link', 'workflow_link',
     'create_banner', 'update_banner', 'delete_banner', 'workflow_banner',
-    'create_arquivo', 'update_arquivo', 'delete_arquivo', 'workflow_arquivo'
+    'create_arquivo', 'update_arquivo', 'delete_arquivo', 'workflow_arquivo',
+    'create_viewer', 'update_viewer', 'delete_viewer', 'workflow_viewer'
     ]

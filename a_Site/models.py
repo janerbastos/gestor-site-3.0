@@ -23,6 +23,7 @@ class Site(models.Model):
     )
 
     url = models.SlugField(max_length=150, unique=True)
+    dominio = models.CharField(max_length=200, null=True, blank=True)
     titulo = models.CharField('Título', max_length=150)
     descricao = models.TextField('Breve descrição', default=None, null=True, blank=True)
     create_at = models.DateTimeField('Data de criação', auto_now_add=True)
@@ -151,7 +152,7 @@ class ContentType(models.Model):
     ATAGENDA  = 'ATAgenda'
     ATARQUIVO = 'ATArquivo'
     ATSERVICO = 'ATServico'
-    ATVIEW    = 'ATView'
+    ATVIEWER    = 'ATViewer'
 
     CHOICE_CONTENTTYPE = (
         ('', ''),
@@ -166,7 +167,7 @@ class ContentType(models.Model):
         (ATAGENDA, 'Agendas'),
         (ATARQUIVO, 'Arquivo'),
         (ATSERVICO, 'Serviço'),
-        (ATVIEW, 'Visão')
+        (ATVIEWER, 'Visão')
     )
 
     tipo = models.SlugField(max_length=20, choices=CHOICE_CONTENTTYPE, unique=True)

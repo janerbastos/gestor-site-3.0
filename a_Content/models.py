@@ -9,6 +9,26 @@ from a_Site.models import FactoryClassModel
 from a_Site.services.imagem_service import ImagemService
 
 
+class ContentViewerMode:
+    """
+    Modos de visualização para conteúdos
+    do tipo visão/viewer.
+    """
+
+    REDIRECT = 'redirect'
+    PROXY = 'proxy'
+    CHILDREN = 'children'
+    TIMELINE = 'timeline'
+    GALLERY = 'gallery'
+
+    CHOICES = (
+        (REDIRECT, 'Redirecionar'),
+        (PROXY, 'Proxy completo'),
+        (CHILDREN, 'Listagem de filhos'),
+        (TIMELINE, 'Timeline'),
+        (GALLERY, 'Galeria'),
+    )
+
 
 class Content(models.Model):
 

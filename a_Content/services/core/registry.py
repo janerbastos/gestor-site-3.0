@@ -52,4 +52,9 @@ SERVICES = {
     "ATArquivo.update"  : "a_Content.services.arquivo.update.UpdateArquivoService",
     "ATArquivo.delete"  : "a_Content.services.arquivo.delete.DeleteArquivoService",
     "ATArquivo.workflow": "a_Content.services.arquivo.workflow.WorkflowArquivoService",
+
+    "ATViewer.create"  : "a_Content.services.viewer.create.CreateViewerService",
+    "ATViewer.update"  : "a_Content.services.viewer.update.UpdateViewerService",
+    "ATViewer.delete"  : "a_Content.services.viewer.delete.DeleteViewerService",
+    "ATViewer.workflow": "a_Content.services.viewer.workflow.WorkflowViewerService",
 }
